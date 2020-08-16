@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "897914927684",
+    "firebase_url": "https://pet-rescue-4f2a1.firebaseio.com",
+    "project_id": "pet-rescue-4f2a1",
+    "storage_bucket": "pet-rescue-4f2a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897914927684:android:b8c3c9dcf8c8cd86a49a11",
+        "android_client_info": {
+          "package_name": "com.wolkorp.petrescue"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897914927684-om2e71k8jiivf2l2jn2og32mb3e368n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS_iQ3wmETls3DTW1D2Arc-vXf0RBh73Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897914927684-om2e71k8jiivf2l2jn2og32mb3e368n4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
