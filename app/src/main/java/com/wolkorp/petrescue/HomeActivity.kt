@@ -24,8 +24,8 @@ class HomeActivity : AppCompatActivity() {
     private fun setup(email: String, provider: String) {
 
         title = "Inicio"
-        emailTextView.text= provider
-        providerTextView.text = email
+        emailTextView.text= email
+        providerTextView.text = provider
 
         logOutButton.setOnClickListener{
             FirebaseAuth.getInstance().signOut()
