@@ -3,6 +3,7 @@ package com.wolkorp.petrescue
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.facebook.login.widget.LoginButton
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -76,7 +77,7 @@ class AuthActivity : AppCompatActivity() {
     private fun showHome(email: String, provider: ProviderType){
         val homeIntent = Intent(this, HomeActivity::class.java).apply {
             putExtra("email", email)
-            putExtra("provider",provider)
+            putExtra("provider",provider.name)
         }
         startActivity(homeIntent)
     }

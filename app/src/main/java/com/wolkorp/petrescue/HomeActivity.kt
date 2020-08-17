@@ -2,6 +2,7 @@ package com.wolkorp.petrescue
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -14,12 +15,15 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+
+
         //setup
         val bundle: Bundle?= intent.extras
         val email: String? = bundle?.getString("email")
         val provider: String? = bundle?.getString("provider")
         setup(email ?:"", provider ?:"")
     }
+
 
     private fun setup(email: String, provider: String) {
 
