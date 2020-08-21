@@ -45,22 +45,24 @@
             android:textAlignment="center"
             android:textColor="#2C384A"
             android:textColorHint="#52afaa" />
+
         <LinearLayout
+            android:id="@+id/authLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="25dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="25dp">
 
             <Button
                 android:id="@+id/signUpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:textColor="#ECEFF1"
                 android:text="Registrarse"
                 android:textAllCaps="false"
-                android:layout_weight="1"/>
+                android:textColor="#ECEFF1" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -71,13 +73,31 @@
                 android:id="@+id/logInButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Acceder"
-                android:textColor="#ECEFF1"
-                android:textAllCaps="false"
-                android:background="@color/colorPrimaryDark"
                 android:layout_weight="1"
-                />
+                android:background="@color/colorPrimaryDark"
+                android:text="Acceder"
+                android:textAllCaps="false"
+                android:textColor="#ECEFF1" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/googleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:drawableStart="@drawable/common_google_signin_btn_icon_dark"
+                android:text="Google"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimaryDark" />
+
+
         </LinearLayout>
+
 
     </LinearLayout>
 

@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".HomeActivity"></activity>
-        <activity android:name=".Home" />
         <activity
             android:name=".AuthActivity"
             android:theme="@style/SplashTheme">
