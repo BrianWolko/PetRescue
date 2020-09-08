@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/buscarFragment"
+        android:icon="@drawable/ic_baseline_buscar"
+        android:title="Buscar" />
+
+    <item
+        android:id="@+id/historiasFragment"
+        android:icon="@drawable/ic_baseline_historias"
+        android:title="Historias" />
+
+    <item
+        android:id="@+id/perfilFragment"
+        android:icon="@drawable/ic_baseline_perfil"
+        android:title="Perfil" />
+</menu>

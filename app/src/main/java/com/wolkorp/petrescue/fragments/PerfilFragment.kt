@@ -1,25 +1,24 @@
-package com.wolkorp.petrescue
+package com.wolkorp.petrescue.fragments
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_home.*
-
-//Tipo de login BW 18/8/2020
-enum class ProviderType{
-    BASIC,
-    GOOGLE
-
-}
-
-class HomeActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+import com.wolkorp.petrescue.R
 
 
+class PerfilFragment : Fragment() {
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_perfil, container, false)
+
+
+        /* Hay que modificar unas cosas para que funcione en el fragment
 
         //setup
         val bundle: Bundle?= intent.extras
@@ -32,9 +31,13 @@ class HomeActivity : AppCompatActivity() {
         prefs.putString("email",email)
         prefs.putString("provider",provider)
         prefs.apply()
+
+        */
+
     }
 
 
+    /* Hay que modificar unas cosas para que funcione en el fragment
     private fun setup(email: String, provider: String) {
 
         title = "Inicio"
@@ -51,4 +54,7 @@ class HomeActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
+
+     */
+
 }

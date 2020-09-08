@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/historiasFragment">
+
+    <fragment
+        android:id="@+id/buscarFragment"
+        android:name="com.wolkorp.petrescue.fragments.BuscarFragment"
+        android:label="Buscar"
+        tools:layout="@layout/fragment_buscar" />
+
+    <fragment
+        android:id="@+id/historiasFragment"
+        android:name="com.wolkorp.petrescue.fragments.HistoriasFragment"
+        android:label="Historias"
+        tools:layout="@layout/fragment_historias" />
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.wolkorp.petrescue.fragments.PerfilFragment"
+        android:label="Mi Perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+</navigation>
