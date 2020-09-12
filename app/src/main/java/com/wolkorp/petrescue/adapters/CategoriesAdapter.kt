@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.flaviofaria.kenburnsview.KenBurnsView
@@ -12,9 +13,19 @@ import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Category
 import kotlinx.android.synthetic.*
 
-class CategoriesAdapter(private var categoriesList: ArrayList<Category>, private val context: Context): RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
+class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
 
 
+    private lateinit var categoriesList: ArrayList<Category>
+    private lateinit var context: Context
+    private lateinit var onItemClick: (Int) -> Unit
+
+
+    constructor(categoriesList: ArrayList<Category>, context: Context, onItemClick: (Int) -> Unit) : this() {
+        this.categoriesList = categoriesList
+        this.context = context
+        this.onItemClick = onItemClick
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
 
@@ -35,7 +46,7 @@ class CategoriesAdapter(private var categoriesList: ArrayList<Category>, private
 
         val categoria = categoriesList[position]
 
-        //Libreria que carga
+        //Libreria que puede cargar imagenes pasandole el url de la imagen
         Glide
             .with(context)
             .load(categoria.imageURL)
@@ -43,6 +54,10 @@ class CategoriesAdapter(private var categoriesList: ArrayList<Category>, private
 
 
         holder.setName(categoria)
+
+        holder.getCardLayout().setOnClickListener {
+            onItemClick(position)
+        }
     }
 
 
@@ -53,11 +68,13 @@ class CategoriesAdapter(private var categoriesList: ArrayList<Category>, private
         //KenBurnsView es en el fondo una ImageView pero que tiene ese efecto que mueve la imagen
         private val categoryImage: KenBurnsView
         private val categoryName: TextView
+        private val categoryCardView: CardView
 
 
         init {
             this.categoryImage = view.findViewById(R.id.category_image)
             this.categoryName = view.findViewById(R.id.category_name)
+            this.categoryCardView = view.findViewById(R.id.category_cardView)
         }
 
 
@@ -67,6 +84,10 @@ class CategoriesAdapter(private var categoriesList: ArrayList<Category>, private
 
         fun getImageView(): KenBurnsView {
             return categoryImage
+        }
+
+        fun getCardLayout(): CardView {
+            return categoryCardView
         }
 
     }
