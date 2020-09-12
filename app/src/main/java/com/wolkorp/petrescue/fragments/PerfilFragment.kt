@@ -12,21 +12,28 @@ import com.wolkorp.petrescue.R
 
 class PerfilFragment : Fragment() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_perfil, container, false)
 
 
-        /* Hay que modificar unas cosas para que funcione en el fragment
 
-        //setup
-        val bundle: Bundle?= intent.extras
-        val email: String? = bundle?.getString("email")
-        val provider: String? = bundle?.getString("provider")
-        setup(email ?:"", provider ?:"")
+
+
+
+
+
+        /* Estas lineas de abajo estan tambien en activity main, hay que averiguar si es necesario mantenerlas
+        // y como pasar informacion de una activity a un fragment
+
 
         //Guardado de datos BW 18/8/2020
+
         val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email",email)
         prefs.putString("provider",provider)
@@ -37,7 +44,8 @@ class PerfilFragment : Fragment() {
     }
 
 
-    /* Hay que modificar unas cosas para que funcione en el fragment
+    /* Esta funcion setea los valores de algunas vistas en perfilfragment
+    //estaba en mainactivity, hay que modificar unas cosas para que funcione en el fragment.
     private fun setup(email: String, provider: String) {
 
         title = "Inicio"
@@ -48,7 +56,6 @@ class PerfilFragment : Fragment() {
             val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
             prefs.clear()
             prefs.apply()
-
 
             FirebaseAuth.getInstance().signOut()
             onBackPressed()
