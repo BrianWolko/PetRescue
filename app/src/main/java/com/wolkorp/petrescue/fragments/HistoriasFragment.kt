@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -12,7 +13,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.CategoriesAdapter
+import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Category
+import com.wolkorp.petrescue.models.Post
 
 
 class HistoriasFragment : Fragment() {
@@ -30,12 +33,28 @@ class HistoriasFragment : Fragment() {
 
 
 
+
+    lateinit var recPosts : RecyclerView
+
+    var posts : MutableList<Post> = ArrayList<Post>()
+
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var postListAdapter: PostListAdapter
+
+    companion object{
+        fun newInstance() = HistoriasFragment()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         fragmentView =  inflater.inflate(R.layout.fragment_historias, container, false)
+        recPosts = fragmentView.findViewById(R.id.rec_posts)
         return fragmentView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,6 +67,20 @@ class HistoriasFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        posts.add(Post("Facundo Soto","Hace una hora","Necesito ayuda con este perro para .................................................................................................................................................................. ","0"))
+        posts.add(Post("Lucas Tula","hace una hora","Texto del post texto del post texto del post","1"))
+        posts.add(Post("Juan","hace una hora","Texto del post texto del post texto del post","2"))
+
+
+
+        recPosts.setHasFixedSize(true)
+        linearLayoutManager = LinearLayoutManager(context)
+        recPosts.layoutManager= linearLayoutManager
+
+        postListAdapter = PostListAdapter(posts){position -> onItemClick2(position)}
+
+
+        recPosts.adapter = postListAdapter
 
         createAndAddCategories()
         setUpPager()
@@ -105,6 +138,8 @@ class HistoriasFragment : Fragment() {
         Snackbar.make(fragmentView, message, Snackbar.LENGTH_LONG).show()
     }
 
-
+    fun onItemClick2(position : Int){
+        Snackbar.make(fragmentView,position.toString(),Snackbar.LENGTH_SHORT).show()
+    }
 
 }
