@@ -6,99 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".AuthActivity">
 
-    <LinearLayout
-        android:id="@+id/ll_main_layout"
+
+    <fragment
+        android:id="@+id/activty_auth_navHostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="#ECEFF1"
-        android:padding="25dp"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:textColor="#2C384A"
-            android:padding="30dp"
-            android:text="Login"/>
-
-        <EditText
-            android:id="@+id/emailEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="inserte su e-mail"
-            android:textAlignment="center"
-            android:textColor="#2C384A"
-            android:textColorHint="#52afaa"
-            />
-
-
-
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:textAlignment="center"
-            android:textColor="#2C384A"
-            android:textColorHint="#52afaa" />
-
-        <LinearLayout
-            android:id="@+id/authLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="25dp">
-
-            <Button
-                android:id="@+id/signUpButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:text="Registrarse"
-                android:textAllCaps="false"
-                android:textColor="#ECEFF1" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5" />
-
-            <Button
-                android:id="@+id/logInButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/colorPrimaryDark"
-                android:text="Acceder"
-                android:textAllCaps="false"
-                android:textColor="#ECEFF1" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/googleButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:drawableStart="@drawable/common_google_signin_btn_icon_dark"
-                android:text="Google"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorPrimaryDark" />
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/login_navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

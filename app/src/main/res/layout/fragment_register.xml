@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.RegisterFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="#007AFF"
+        android:padding="25dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:textColor="#ffffff"
+            android:padding="30dp"
+            android:text="Crear Nueva Cuenta"/>
+
+        <EditText
+            android:id="@+id/registerEmailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:hint="Registre su e-mail"
+            android:textAlignment="center"
+            android:textColor="#2C384A"
+            android:textColorHint="#52afaa"
+            />
+
+
+
+        <EditText
+            android:id="@+id/registerPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:textAlignment="center"
+            android:textColor="#2C384A"
+            android:textColorHint="#52afaa" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="25dp">
+
+            <Button
+                android:id="@+id/regsiterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#000000"
+                android:text="Registrarse"
+                android:textAllCaps="false"
+                android:textColor="#ECEFF1" />
+
+
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/googleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:drawableStart="@drawable/common_google_signin_btn_icon_dark"
+                android:text="Google"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimaryDark" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
