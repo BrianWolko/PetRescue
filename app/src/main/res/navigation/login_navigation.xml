@@ -9,7 +9,11 @@
         android:id="@+id/loginFragment"
         android:name="com.wolkorp.petrescue.fragments.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_homeActivity"
+            app:destination="@id/homeActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -30,5 +34,14 @@
         android:id="@+id/registerFragment"
         android:name="com.wolkorp.petrescue.fragments.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_homeActivity"
+            app:destination="@id/homeActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/homeActivity"
+        android:name="com.wolkorp.petrescue.HomeActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>

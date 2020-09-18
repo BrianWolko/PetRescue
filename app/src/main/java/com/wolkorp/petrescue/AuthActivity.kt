@@ -29,7 +29,8 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        setTheme(R.style.AppTheme)
+        //Le quita la barra superior a toda la activity
+        setTheme(R.style.Theme_Design_NoActionBar)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)

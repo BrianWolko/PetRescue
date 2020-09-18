@@ -37,8 +37,7 @@
             android:textColor="#ffffff"
             android:padding="30dp"
             android:text="Bienvenido a Pet Rescue"
-            android:textStyle="bold"
-            />
+android:textStyle="bold"            />
 
         <Space
             android:layout_width="wrap_content"
@@ -57,8 +56,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:text="Registrarse"
+                android:background="@drawable/rounded_button_blue"
+
+                android:text="Crear Cuenta"
                 android:textAllCaps="false"
                 android:textColor="#ECEFF1" />
 
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/verde"
+                android:background="@drawable/rounded_button_green"
                 android:text="Ingresar"
                 android:textColor="#ECEFF1"/>
 

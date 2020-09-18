@@ -12,10 +12,6 @@ import kotlinx.android.synthetic.main.fragment_welcome.*
 
 class WelcomeFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,12 +25,15 @@ class WelcomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        //Navega hacia RegisterFragment
         registrarseButton.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_welcomeFragment_to_registerFragment)
         )
 
+        //Navega hacia LoginFragment
         ingresarButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_welcomeFragment_to_loginFragment)
+            Navigation.createNavigateOnClickListener(R.id.action_welcomeFragment_to_loginFragment
+            )
         )
     }
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.Navigation
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -69,6 +70,12 @@ class LoginFragment : Fragment() {
         super.onStart()
 
         //authLayout.visibility = View.VISIBLE
+
+
+        //Navega hacia MainActivity falta agregarle mas
+        logInButton.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeActivity)
+        )
     }
 
 
