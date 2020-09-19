@@ -32,8 +32,7 @@ class WelcomeFragment : Fragment() {
 
         //Navega hacia LoginFragment
         ingresarButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_welcomeFragment_to_loginFragment
-            )
+            Navigation.createNavigateOnClickListener(R.id.action_welcomeFragment_to_loginFragment)
         )
     }
 }

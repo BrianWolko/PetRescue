@@ -1,26 +1,13 @@
 package com.wolkorp.petrescue.fragments
 
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.navigation.Navigation
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.wolkorp.petrescue.HomeActivity
-import com.wolkorp.petrescue.ProviderType
+
 import com.wolkorp.petrescue.R
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -36,11 +23,6 @@ class LoginFragment : Fragment() {
 
         super.onCreate(savedInstanceState)
 
-        // esta linea la deje en authactivity
-        //setTheme(R.style.AppTheme)
-
-        // si funciona todo bien borrar esta linea
-        //setContentView(R.layout.activity_auth)
 
         //Analitics event
         val analytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
@@ -55,6 +37,10 @@ class LoginFragment : Fragment() {
        // session()
     }
     */
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
 
 
@@ -79,7 +65,15 @@ class LoginFragment : Fragment() {
     }
 
 
-   /* private fun session(){
+
+
+
+
+
+
+
+   /*
+   private fun session(){
         val prefs : SharedPreferences = getSharedPreferences(getString(R.string.prefs_file),
             Context.MODE_PRIVATE)
         val email = prefs.getString("email",null)
@@ -92,22 +86,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun setup(){
-        //title = "Autenticacion"
 
-        //funcion de registro
-        signUpButton.setOnClickListener{
-            if( emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty() ){
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailEditText.text.toString(),
-                    passwordEditText.text.toString()).addOnCompleteListener{
 
-                    if(it.isSuccessful){
-                        showHome(it.result?.user?.email ?:"" , ProviderType.BASIC )
-                    } else {
-                        showAlert()
-                    }
-                }
-            }
-        }
 
         //funcion logIn
         logInButton.setOnClickListener{
@@ -124,6 +104,7 @@ class LoginFragment : Fragment() {
                     }
             }
         }
+
         googleButton.setOnClickListener{
 
             // Configuracion

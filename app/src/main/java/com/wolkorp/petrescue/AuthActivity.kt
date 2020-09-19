@@ -1,42 +1,44 @@
 package com.wolkorp.petrescue
 
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import com.facebook.login.widget.LoginButton
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import kotlinx.android.synthetic.main.activity_auth.*
-import kotlinx.android.synthetic.main.activity_auth.view.*
-import kotlin.concurrent.thread
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class AuthActivity : AppCompatActivity() {
 
-    private val GOOGLE_SIGN_IN = 100
+    private lateinit var auth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        //Le quita la barra superior a toda la activity
+        //Le quita la barra superior a toda esta activity
         setTheme(R.style.Theme_Design_NoActionBar)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        //Esto ver si lo muevo a la primera pantalla que apareceria al lanzar la app
+        //auth = Firebase.auth
 
     }
 
 
+
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+       // val currentUser = auth.currentUser
+
+        //Cambiar esta funcion por una que navegue irectamnete a MainActivity si ya esta regustrado
+        //updateUI(currentUser)
+    }
 }
+
+
+
+
+
