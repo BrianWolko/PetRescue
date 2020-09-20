@@ -6,42 +6,38 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.Navigation
-
+import androidx.navigation.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.wolkorp.petrescue.R
 import kotlinx.android.synthetic.main.fragment_login.*
+
+import kotlinx.android.synthetic.main.fragment_register.*
 
 
 class LoginFragment : Fragment() {
 
+    private lateinit var auth: FirebaseAuth
 
-    private val GOOGLE_SIGN_IN = 100
 
-    /*
+
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
+        auth = Firebase.auth
 
-
+        /*
+        //Esto era lo que habia hecho Brian, falta integrarlo
         //Analitics event
         val analytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(requireContext());
         val bundle = Bundle();
         bundle.putString("message", "Integracion de Firebase completa")
         analytics.logEvent("InitSesion", bundle)
 
-        //Setup
-
-        //estas dos fnciones comente
-        //setup()
-       // session()
+        */
     }
-    */
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
 
 
     override fun onCreateView(
@@ -52,23 +48,34 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
+
     override fun onStart(){
         super.onStart()
-
-        //authLayout.visibility = View.VISIBLE
-
-
-        //Navega hacia MainActivity falta agregarle mas
-        logInButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeActivity)
-        )
+        setUpLoginButton()
     }
 
 
+    //Funcion Login, se encarga de obtener el mail y la contraseña y enviarlos a Firebase
+    private fun setUpLoginButton() {
+        logInButton.setOnClickListener {
 
+            //Falta por hacer asegurarse de que el mail y la contraseña  no son nil
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
 
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    //Loggeo exitoso, navega hacia MainActivity
+                    it.findNavController().navigate(R.id.action_loginFragment_to_homeActivity)
 
-
+                } else {
+                    // Error en el logeo, se muestra mensaje
+                    // podrian hacerse mas cosas aca ademas de mostrar un mensaje
+                    Toast.makeText(context, "No se pudo ingresar a tu cuenta", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
 
 
@@ -89,22 +96,6 @@ class LoginFragment : Fragment() {
 
 
 
-        //funcion logIn
-        logInButton.setOnClickListener{
-            if( emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty() ){
-                FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword(emailEditText.text.toString(),
-                        passwordEditText.text.toString()).addOnCompleteListener{
-
-                        if(it.isSuccessful){
-                            showHome(it.result?.user?.email ?:"" , ProviderType.BASIC )
-                        } else {
-                            showAlert()
-                        }
-                    }
-            }
-        }
-
         googleButton.setOnClickListener{
 
             // Configuracion
@@ -122,7 +113,7 @@ class LoginFragment : Fragment() {
 
 
     private fun showAlert(){
-        //Cambies esta linea : this por contex!!
+        //Cambie esta linea : this por contex!!
         val builder = AlertDialog.Builder(context!!)
         builder.setTitle("Error")
         builder.setMessage("Se ha producido un error autenticando al usuario")
@@ -131,15 +122,7 @@ class LoginFragment : Fragment() {
         dialog.show()
     }
 
-    private fun showHome(email: String, provider: ProviderType){
 
-
-        val homeIntent = Intent(this, HomeActivity::class.java).apply {
-            putExtra("email", email)
-            putExtra("provider",provider.name)
-        }
-        startActivity(homeIntent)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

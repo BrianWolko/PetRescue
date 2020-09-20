@@ -1,13 +1,13 @@
 package com.wolkorp.petrescue.fragments
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -37,65 +37,32 @@ class RegisterFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-
         setUpRegisterButton()
-
-
     }
 
 
+    //Funcion de Registro, captura el mail y la contraseña y crea un nuevo usuario en Firebase
     private fun setUpRegisterButton(){
-
-
 
         registerButton.setOnClickListener {
 
+            //Por hacer: Aesegurarse de que estas no sean null
             val email = registerEmailEditText.text.toString()
             val password = registerPasswordEditText.text.toString()
 
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
-                    val user = auth.currentUser
-
-                    Toast.makeText(context, "Bieeeeeeeeen .", Toast.LENGTH_SHORT).show()
-                    //Aca hace funcion que navegue hacia activity main
-                    // updateUI(user)
+                    //Registro exitoso, navega hacia activity main
+                    it.findNavController().navigate(R.id.action_registerFragment_to_homeActivity)
 
                 } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        context, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    //updateUI(null)
+                    // No se pudo registrar, mostrar mensaje de fallo.
+                    // Podria mejorarse y hacer mas cosas que solo mostrar un mensaje
+                    Toast.makeText(context, "No se pudo registrar tu cuenta", Toast.LENGTH_SHORT).show()
                 }
-
-                // ...
             }
         }
     }
 
-    /*
-       //funcion de registro
-        signUpButton.setOnClickListener{
-            if( emailEditText.text.isNotEmpty() && passwordEditText.text.isNotEmpty() ){
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailEditText.text.toString(),
-                    passwordEditText.text.toString()).addOnCompleteListener{
-
-                    if(it.isSuccessful){
-                        showHome(it.result?.user?.email ?:"" , ProviderType.BASIC )
-                    } else {
-                        showAlert()
-                    }
-                }
-            }
-        }
-     */
 
 }

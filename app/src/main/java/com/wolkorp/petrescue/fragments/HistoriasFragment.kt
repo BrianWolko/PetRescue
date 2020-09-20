@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -48,6 +49,7 @@ class HistoriasFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        Toast.makeText(context, "Bienvenido!", Toast.LENGTH_LONG).show()
 
         createAndAddCategories()
         setUpPager()
@@ -75,7 +77,6 @@ class HistoriasFragment : Fragment() {
         categoriesPager.adapter = CategoriesAdapter(categoriesList, requireContext()) {position -> onItemClick(position)}
 
 
-
         //El resto de lineas en esta funcion solo estan haciendo cosas para
         // modificar como se ve el pager, pero no son escenciales para que funcione
         categoriesPager.clipToPadding = false
@@ -93,10 +94,11 @@ class HistoriasFragment : Fragment() {
         }
 
         categoriesPager.setPageTransformer(compositePageTransformer)
-
     }
 
 
+    //Funcion que se llama cuando el usuario toca una categoria
+    //aca es donde se trabajara despues para cargar las historias de la categoria selecionada
     fun onItemClick(position: Int): Unit {
 
         val selectedCategory = categoriesList[position]

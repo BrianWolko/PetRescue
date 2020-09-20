@@ -3,6 +3,7 @@ package com.wolkorp.petrescue
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -45,7 +46,7 @@ class HomeActivity : AppCompatActivity() {
 
 
 
-
+        //El resto de la funcion es parte del codigo que hizo brian, falta inyegrarlo
 
         //Obtiene datos del usuario que se guardaron en AuthActivity
         val bundle: Bundle?= intent.extras
@@ -60,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
         prefs.putString("email",email)
         prefs.putString("provider",provider)
         prefs.apply()
+
 
 
     }
