@@ -40,30 +40,6 @@ class HomeActivity : AppCompatActivity() {
         //Hace funcionar la navegacion de la barra inferior (BottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
 
-
-
-
-
-
-
-        //El resto de la funcion es parte del codigo que hizo brian, falta inyegrarlo
-
-        //Obtiene datos del usuario que se guardaron en AuthActivity
-        val bundle: Bundle?= intent.extras
-        val email: String? = bundle?.getString("email")
-        val provider: String? = bundle?.getString("provider")
-       // setup(email ?:"", provider ?:"")
-
-
-
-        //Guardado de datos BW 18/8/2020
-        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-        prefs.putString("email",email)
-        prefs.putString("provider",provider)
-        prefs.apply()
-
-
-
     }
 
 

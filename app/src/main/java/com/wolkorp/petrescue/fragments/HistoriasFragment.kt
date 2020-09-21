@@ -1,5 +1,6 @@
 package com.wolkorp.petrescue.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.CategoriesAdapter
 import com.wolkorp.petrescue.models.Category
+import kotlinx.android.synthetic.main.fragment_historias.*
 
 
 class HistoriasFragment : Fragment() {
@@ -44,15 +46,18 @@ class HistoriasFragment : Fragment() {
         //Inicializo los atributos del Fragment
         categoriesPager = view.findViewById(R.id.categoriesViewPager)
         categoriesList = ArrayList()
+
+        createAndAddCategories()
+        setUpPager()
+
     }
 
 
     override fun onStart() {
         super.onStart()
-        Toast.makeText(context, "Bienvenido!", Toast.LENGTH_LONG).show()
 
-        createAndAddCategories()
-        setUpPager()
+        addUserName()
+        Toast.makeText(context, "Bienvenido!", Toast.LENGTH_LONG).show()
     }
 
 
@@ -107,6 +112,13 @@ class HistoriasFragment : Fragment() {
         Snackbar.make(fragmentView, message, Snackbar.LENGTH_LONG).show()
     }
 
+
+    fun addUserName() {
+        val prefs  = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val savedUserName = prefs.getString("userName",null)
+
+        mensaje_bienvenida.text = "${mensaje_bienvenida.text} $savedUserName"
+    }
 
 
 }

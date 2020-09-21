@@ -6,9 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.wolkorp.petrescue.R
@@ -29,11 +27,13 @@ class PerfilFragment : Fragment() {
         //Estas lineas de abajo fueron hecha por brian en en MainActivity, hay que averiguar si es necesario mantenerlas
         // y como pasar informacion de una activity a un fragment
 
-        //Guardado de datos
-        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-        prefs.putString("email",email)
-        prefs.putString("provider",provider)
-        prefs.apply()
+
+        //Obtiene datos del usuario que se guardaron en AuthActivity
+        val bundle: Bundle?= intent.extras
+        val email: String? = bundle?.getString("email")
+        val provider: String? = bundle?.getString("provider")
+        // setup(email ?:"", provider ?:"")
+
 
         */
     }
@@ -42,8 +42,20 @@ class PerfilFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        //Sale de la cuenta del usuario
+       loadData()
+       setUpLogOutButton()
+    }
+
+
+    //Sale de la cuenta del usuario
+    private fun setUpLogOutButton() {
         logOutButton.setOnClickListener{
+
+            val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+            prefs.clear()
+            prefs.apply()
+
+
             Firebase.auth.signOut()
             it.findNavController().navigate(R.id.action_perfilFragment_to_authActivity)
 
@@ -51,25 +63,23 @@ class PerfilFragment : Fragment() {
     }
 
 
+    private fun loadData() {
+        val prefs  = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
 
+        val savedUserName = prefs.getString("userName",null)
+        val savedEmail = prefs.getString("email",null)
 
-    /* Esta funcion setea los valores de algunas vistas en perfilfragment
-    //Estaba hecha en MainActivity por brian, hay que modificar unas cosas para que funcione en el fragment.
-    private fun setup(email: String, provider: String) {
+        //Aca solo va a mostrar  el mail y el nombre cuando el usuario se registra por primera vez
+        // si ya esta registrado, no va a mostrar los datos.
+        //para solucionarlo habria que obtenerlos desde firebase
+        emailTextView.text  = "${emailTextView.text}  $savedEmail"
+        userNameTextView.text = "${userNameTextView.text} $savedUserName"
 
-        emailTextView.text= email
-        providerTextView.text = provider
-
-        logOutButton.setOnClickListener{
-            val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-            prefs.clear()
-            prefs.apply()
-
-            FirebaseAuth.getInstance().signOut()
-            onBackPressed()
-        }
     }
 
-    */
+
+
+
+
 
 }
