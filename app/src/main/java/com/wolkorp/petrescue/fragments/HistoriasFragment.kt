@@ -32,7 +32,6 @@ class HistoriasFragment : Fragment() {
     private lateinit var fragmentView: View
 
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         fragmentView =  inflater.inflate(R.layout.fragment_historias, container, false)
@@ -49,15 +48,8 @@ class HistoriasFragment : Fragment() {
 
         createAndAddCategories()
         setUpPager()
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
         addUserName()
-        Toast.makeText(context, "Bienvenido!", Toast.LENGTH_LONG).show()
+
     }
 
 
@@ -117,7 +109,7 @@ class HistoriasFragment : Fragment() {
         val prefs  = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val savedUserName = prefs.getString("userName",null)
 
-        mensaje_bienvenida.text = "${mensaje_bienvenida.text} $savedUserName"
+        mensaje_bienvenida.text = "${mensaje_bienvenida.text} $savedUserName !"
     }
 
 
