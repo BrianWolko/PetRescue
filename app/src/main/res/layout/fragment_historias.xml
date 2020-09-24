@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:text="Aca va una frase que"
+        android:text="Frase de bienvenida"
         android:textColor="#000000"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:text="suene linda"
+        android:text="Categorias"
         android:textColor="#757575"
         android:textSize="30sp"
         app:layout_constraintTop_toBottomOf="@id/frase_entrada" />
