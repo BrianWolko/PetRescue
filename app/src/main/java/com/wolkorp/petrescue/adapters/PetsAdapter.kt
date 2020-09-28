@@ -63,7 +63,7 @@ class PetsAdapter(private var petsList: ArrayList<Pet>, private val context: Con
             petName.text = pet.name
         }
 
-        fun getImageView(): View  {
+        fun getImageView(): ImageView  {
             return petImage
         }
 

@@ -1,16 +1,15 @@
 package com.wolkorp.petrescue.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
+import com.ramotion.cardslider.CardSliderLayoutManager
+import com.ramotion.cardslider.CardSnapHelper
 import com.wolkorp.petrescue.R
-import com.wolkorp.petrescue.adapters.CategoriesAdapter
 import com.wolkorp.petrescue.adapters.PetsAdapter
-import com.wolkorp.petrescue.models.Category
 import com.wolkorp.petrescue.models.Pet
 
 
@@ -61,6 +60,11 @@ class BuscarFragment : Fragment() {
 
         //Esta es la linea de codigo que une el adapter con el pager y permite que funcinonen juntos
         reciclerView.adapter = PetsAdapter(petsList, requireContext())
+
+
+
+        reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
+        CardSnapHelper().attachToRecyclerView(reciclerView);
     }
 
 
