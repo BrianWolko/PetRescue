@@ -6,21 +6,38 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PetsAdapter
 import com.wolkorp.petrescue.models.Pet
+import kotlinx.android.synthetic.main.fragment_buscar.*
 
 
-class BuscarFragment : Fragment() {
+class BuscarFragment : Fragment(), OnMapReadyCallback {
 
     //LOS ARIBUTOS DEL FRAGEMNT
-
+    private lateinit var mapa: GoogleMap
     private lateinit var reciclerView: RecyclerView
     private lateinit var petsList: ArrayList<Pet>
     private lateinit var fragmentView: View
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        //Inicializa el mapa
+        map_view.onCreate(savedInstanceState)
+        map_view.onResume()
+        map_view.getMapAsync(this)
+    }
 
 
     override fun onCreateView(
@@ -82,18 +99,40 @@ class BuscarFragment : Fragment() {
         reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
         CardSnapHelper().attachToRecyclerView(reciclerView);
 
-
+        //Se activa cuando se desliza  el RecyclerView
         reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    petsDidScroll()
+                    //El RecyclerView paro de moverse
+                    reciclerViewStoppedScrolling()
                 }
             }
         })
     }
 
 
-    private fun petsDidScroll() {
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    override fun onMapReady(googleMap: GoogleMap) {
+        if(googleMap != null) {
+            mapa = googleMap
+            // Agrega markador en Buenos Aires y mueve la camara
+            val buenosAires = LatLng(-34.6037, -58.3816)
+            mapa.addMarker(MarkerOptions().position(buenosAires).title("Ciudad de Buenos Aires"))
+            mapa.moveCamera(CameraUpdateFactory.newLatLng(buenosAires))
+        }
+    }
+
+
+    private fun reciclerViewStoppedScrolling() {
         val recivlerViewManager = reciclerView.layoutManager as CardSliderLayoutManager
         //Me da la posicion del principal item que se muestra en el recicler view
         val position = recivlerViewManager.getActiveCardPosition()
