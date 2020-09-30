@@ -20,22 +20,59 @@
             android:id="@+id/pets_list"
             android:layout_width="match_parent"
             android:layout_height="210dp"
-            app:layout_constraintBottom_toTopOf="@id/texto_descripcion"
+            app:layout_constraintBottom_toTopOf="@id/description_text_switcher"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="-37dp"/>
+            android:layout_marginTop="40dp"
+            />
 
-        <TextView
-            android:id="@+id/texto_descripcion"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Aca va una descripcion \n bla bla bla \n bla bla bla "
-            android:textSize="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pets_list" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp">
 
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="30dp"
+                android:src="@drawable/ic_notes"
+                android:scaleType="fitCenter"/>
+
+            <TextSwitcher
+                android:id="@+id/description_text_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="61dp"
+                android:inAnimation="@android:anim/slide_in_left"
+                android:outAnimation="@android:anim/slide_out_right"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="30dp"
+                android:src="@drawable/ic_clock"
+                android:scaleType="fitCenter"/>
+
+            <TextSwitcher
+                android:id="@+id/location_text_switcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="61dp"
+                android:inAnimation="@android:anim/slide_in_left"
+                android:outAnimation="@android:anim/slide_out_right"/>
+        </FrameLayout>
 
 
         <com.google.android.gms.maps.MapView
@@ -44,10 +81,9 @@
             android:layout_height="500dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/texto_descripcion"
+            app:layout_constraintTop_toBottomOf="@+id/location_text_switcher"
 
-            />
-
+        />
 
     </LinearLayout>
 </ScrollView>
