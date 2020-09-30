@@ -75,15 +75,18 @@
         </FrameLayout>
 
 
-        <com.google.android.gms.maps.MapView
+        <com.wolkorp.petrescue.CustomMapView
             android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="400dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_text_switcher"
 
         />
+
+
+
 
     </LinearLayout>
 </ScrollView>

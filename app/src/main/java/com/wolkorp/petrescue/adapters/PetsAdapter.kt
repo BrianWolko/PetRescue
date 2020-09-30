@@ -41,7 +41,6 @@ class PetsAdapter(private var petsList: ArrayList<Pet>, private val context: Con
             .into(holder.getImageView())
 
 
-        holder.setName(pet)
     }
 
 
@@ -50,18 +49,12 @@ class PetsAdapter(private var petsList: ArrayList<Pet>, private val context: Con
     class PetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val petImage: ImageView
-        private val petName: TextView
 
 
         init {
             this.petImage = view.findViewById(R.id.pet_image)
-            this.petName = view.findViewById(R.id.pet_name)
         }
 
-
-        fun setName(pet: Pet) {
-            petName.text = pet.name
-        }
 
         fun getImageView(): ImageView  {
             return petImage
