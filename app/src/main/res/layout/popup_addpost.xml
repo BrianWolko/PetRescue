@@ -31,11 +31,10 @@
 
     <Button
         android:id="@+id/btnSalir"
-        android:layout_width="45dp"
-        android:layout_height="32dp"
+        android:layout_width="42dp"
+        android:layout_height="48dp"
         android:layout_marginTop="12dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FFFFFF"
+
         android:drawableBottom="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.795"
