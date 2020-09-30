@@ -1,5 +1,6 @@
 package com.wolkorp.petrescue.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,11 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
 
-class PostListAdapter(private var postList : MutableList<Post>, val onItemCLick2 : (Int) -> Unit): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
-// class PostListAdapter(private var postList : MutableList<Post>): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
+class PostListAdapter(private var postList : MutableList<Post>,var context: Context): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
+
 
     companion object {
         private val TAG = "PostListAdapter"
@@ -36,9 +38,14 @@ class PostListAdapter(private var postList : MutableList<Post>, val onItemCLick2
         holder.setHora(postList[position].hora)
         holder.setTexto(postList[position].texto)
 
-        holder.getCardLayout().setOnClickListener{
-            onItemCLick2(position)
-        }
+        Glide
+            .with(context)
+            .load(postList[position].urlImg)
+            .into(holder.getImageView());
+
+
+
+
     }
 
     class PostHolder (v: View) : RecyclerView.ViewHolder (v){
@@ -63,8 +70,14 @@ class PostListAdapter(private var postList : MutableList<Post>, val onItemCLick2
             txt.text = txtPost
         }
 
+
         fun getCardLayout(): CardView {
             return view.findViewById(R.id.card_package_item)
         }
+
+        fun getImageView () : ImageView {
+           return view.findViewById(R.id.img_post)
+       }
+
     }
 }

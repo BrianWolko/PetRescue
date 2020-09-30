@@ -79,9 +79,9 @@
             />
 
         <ImageView
+            android:id="@+id/img_post"
             android:layout_width="341dp"
             android:layout_height="289dp"
-            android:src="@drawable/perro"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
