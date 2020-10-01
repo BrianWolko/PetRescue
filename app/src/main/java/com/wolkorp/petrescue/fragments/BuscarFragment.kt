@@ -166,7 +166,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         //Me da la posicion del principal item que se muestra en el recicler view
         val position = recivlerViewManager.getActiveCardPosition()
 
-        //val petName = petsList.get(position).name
+        //val petDescription = petsList.get(position).descripcion
         val latitude = petsList.get(position).latidud
         val longitude = petsList.get(position).longitud
         val fecha = petsList.get(position).fecha
