@@ -42,11 +42,8 @@ class PostListAdapter(private var postList : MutableList<Post>,var context: Cont
             .with(context)
             .load(postList[position].urlImg)
             .into(holder.getImageView());
-
-
-
-
     }
+
 
     class PostHolder (v: View) : RecyclerView.ViewHolder (v){
         private var view : View

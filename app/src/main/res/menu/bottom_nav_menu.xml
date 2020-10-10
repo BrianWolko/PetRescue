@@ -8,7 +8,7 @@
         android:title="Buscar" />
 
     <item
-        android:id="@+id/historiasFragment"
+        android:id="@+id/categoriasFragment"
         android:icon="@drawable/ic_baseline_historias"
         android:title="Historias" />
 
