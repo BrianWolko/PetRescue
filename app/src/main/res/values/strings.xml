@@ -3,5 +3,13 @@
     <string name="prefs_file">com.wolkorp.petrescue.PREFERENCE_FILE_KEY</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="title_activity_maps">Map</string>
+
+    <string-array name="categorias">
+        <item>Buscar familia</item>
+        <item>Buscar chofer</item>
+        <item>Buscar asesoria</item>
+    </string-array>
+
 </resources>
