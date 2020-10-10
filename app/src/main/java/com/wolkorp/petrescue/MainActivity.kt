@@ -3,6 +3,7 @@ package com.wolkorp.petrescue
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -20,6 +21,9 @@ enum class ProviderType{
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Asegurarse que esta linea no rompa nada
+        setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -35,29 +39,6 @@ class HomeActivity : AppCompatActivity() {
 
         //Hace funcionar la navegacion de la barra inferior (BottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
-
-
-
-
-
-
-
-
-
-        //Obtiene datos del usuario que se guardaron en AuthActivity
-        val bundle: Bundle?= intent.extras
-        val email: String? = bundle?.getString("email")
-        val provider: String? = bundle?.getString("provider")
-       // setup(email ?:"", provider ?:"")
-
-
-
-        //Guardado de datos BW 18/8/2020
-        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-        prefs.putString("email",email)
-        prefs.putString("provider",provider)
-        prefs.apply()
-
 
     }
 

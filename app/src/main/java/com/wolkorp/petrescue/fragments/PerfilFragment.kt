@@ -6,16 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.auth.FirebaseAuth
+import androidx.navigation.findNavController
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.wolkorp.petrescue.R
+import kotlinx.android.synthetic.main.fragment_perfil.*
 
 
 class PerfilFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -24,44 +23,63 @@ class PerfilFragment : Fragment() {
 
 
 
-
-
-
-
-        /* Estas lineas de abajo estan tambien en activity main, hay que averiguar si es necesario mantenerlas
+        /*
+        //Estas lineas de abajo fueron hecha por brian en en MainActivity, hay que averiguar si es necesario mantenerlas
         // y como pasar informacion de una activity a un fragment
 
 
-        //Guardado de datos BW 18/8/2020
+        //Obtiene datos del usuario que se guardaron en AuthActivity
+        val bundle: Bundle?= intent.extras
+        val email: String? = bundle?.getString("email")
+        val provider: String? = bundle?.getString("provider")
+        // setup(email ?:"", provider ?:"")
 
-        val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
-        prefs.putString("email",email)
-        prefs.putString("provider",provider)
-        prefs.apply()
 
         */
-
     }
 
 
-    /* Esta funcion setea los valores de algunas vistas en perfilfragment
-    //estaba en mainactivity, hay que modificar unas cosas para que funcione en el fragment.
-    private fun setup(email: String, provider: String) {
+    override fun onStart() {
+        super.onStart()
 
-        title = "Inicio"
-        emailTextView.text= email
-        providerTextView.text = provider
+       loadData()
+       setUpLogOutButton()
+    }
 
+
+    //Sale de la cuenta del usuario
+    private fun setUpLogOutButton() {
         logOutButton.setOnClickListener{
-            val prefs = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
+
+            val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
             prefs.clear()
             prefs.apply()
 
-            FirebaseAuth.getInstance().signOut()
-            onBackPressed()
+
+            Firebase.auth.signOut()
+            it.findNavController().navigate(R.id.action_perfilFragment_to_authActivity)
+
         }
     }
 
-     */
+
+    private fun loadData() {
+        val prefs  = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+
+        val savedUserName = prefs.getString("userName",null)
+        val savedEmail = prefs.getString("email",null)
+
+        //Aca solo va a mostrar  el mail y el nombre cuando el usuario se registra por primera vez
+        // si ya esta registrado, no va a mostrar los datos.
+        //para solucionarlo habria que obtenerlos desde firebase
+        emailTextView.text  = "${emailTextView.text}  $savedEmail"
+        userNameTextView.text = "${userNameTextView.text} $savedUserName"
+
+    }
+
+
+
+
+
 
 }

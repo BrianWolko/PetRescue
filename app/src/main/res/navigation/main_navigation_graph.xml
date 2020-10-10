@@ -21,6 +21,15 @@
         android:id="@+id/perfilFragment"
         android:name="com.wolkorp.petrescue.fragments.PerfilFragment"
         android:label="Mi Perfil"
-        tools:layout="@layout/fragment_perfil" />
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_perfilFragment_to_authActivity"
+            app:destination="@id/authActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/authActivity"
+        android:name="com.wolkorp.petrescue.AuthActivity"
+        android:label="activity_auth"
+        tools:layout="@layout/activity_auth" />
 
 </navigation>

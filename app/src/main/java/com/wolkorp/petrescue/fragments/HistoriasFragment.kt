@@ -1,5 +1,7 @@
 package com.wolkorp.petrescue.fragments
 
+
+import android.content.Context
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -8,6 +10,8 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
+import android.widget.Toast
 import android.view.WindowManager
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -16,9 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
+
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -30,6 +35,8 @@ import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.CategoriesAdapter
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Category
+
+import kotlinx.android.synthetic.main.fragment_historias.*
 import com.wolkorp.petrescue.models.Post
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,14 +57,11 @@ class HistoriasFragment : Fragment() {
 
     private lateinit var fragmentView: View
 
-    val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
+    private lateinit var recPosts: RecyclerView
 
-    lateinit var recPosts: RecyclerView
-
-
-    var posts: MutableList<Post> = ArrayList<Post>()
-    var posts2: MutableList<String> = ArrayList<String>()
+    var posts = ArrayList<Post>()
 
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var postListAdapter: PostListAdapter
@@ -85,6 +89,7 @@ class HistoriasFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
         recPosts = fragmentView.findViewById(R.id.rec_posts)
         mensaje = fragmentView.findViewById(R.id.mensaje_bienvenida)
@@ -158,10 +163,6 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -170,14 +171,14 @@ class HistoriasFragment : Fragment() {
         categoriesList = ArrayList()
 
 
+        createAndAddCategories()
+        setUpPager()
+        addUserName()
     }
 
 
     override fun onStart() {
         super.onStart()
-         posts.add(Post("Lucas Perez","hace una hora","Texto del post texto del post texto del post","1","https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/taking_your_dog_to_the_vet.jpeg?alt=media&token=ec10310a-69ae-493b-9f74-37c4269c2dd6","Familia"))
-
-
 
         recPosts.setHasFixedSize(true)
         linearLayoutManager = LinearLayoutManager(context)
@@ -188,8 +189,6 @@ class HistoriasFragment : Fragment() {
 
         recPosts.adapter = postListAdapter
 
-        createAndAddCategories()
-        setUpPager()
 
         //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
         db.collection("Post")
@@ -232,7 +231,6 @@ class HistoriasFragment : Fragment() {
         categoriesPager.adapter = CategoriesAdapter(categoriesList, requireContext()) {position -> onItemClick(position)}
 
 
-
         //El resto de lineas en esta funcion solo estan haciendo cosas para
         // modificar como se ve el pager, pero no son escenciales para que funcione
         categoriesPager.clipToPadding = false
@@ -250,11 +248,12 @@ class HistoriasFragment : Fragment() {
         }
 
         categoriesPager.setPageTransformer(compositePageTransformer)
-
     }
 
 
-    fun onItemClick(position: Int): Unit {
+    //Funcion que se llama cuando el usuario toca una categoria
+    //aca es donde se trabajara despues para cargar las historias de la categoria selecionada
+    private fun onItemClick(position: Int) {
 
         val selectedCategory = categoriesList[position]
         val message = "La categoria seleccionda es: ${selectedCategory.categoryName}"
@@ -263,13 +262,23 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    fun obtenerHora():String{
+
+    private fun addUserName() {
+        val prefs  = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val savedUserName = prefs.getString("userName",null)
+
+        mensaje_bienvenida.text = "${mensaje_bienvenida.text} $savedUserName !"
+    }
+
+
+    private fun obtenerHora():String{
         val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
         val currentDateandTime: String = simpleDateFormat.format(Date())
         return currentDateandTime
     }
 
-    fun getCurrentUser() : String? {
+
+    private fun getCurrentUser() : String? {
         val user = FirebaseAuth.getInstance().currentUser
         return user?.email
     }
