@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,6 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -36,7 +36,7 @@ class HistoriasFragment : Fragment() {
 
     private lateinit var postsRecyclerView: RecyclerView
     //Una lista simple con los objetos que va a mostrar postsRecyclerView
-    private lateinit var postsList: ArrayList<Post>
+    private var postsList: ArrayList<Post> = ArrayList<Post>()
 
     private lateinit var texto: TextView
     private lateinit var btnAddPost : Button
@@ -58,10 +58,7 @@ class HistoriasFragment : Fragment() {
         // Inflate the layout for this fragment
 
         fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
-
         postsRecyclerView = fragmentView.findViewById(R.id.rec_posts)
-        postsList = ArrayList()
-
         btnAddPost = fragmentView.findViewById(R.id.btnAddPost)
         storageReference  = FirebaseStorage.getInstance().reference
 
@@ -90,7 +87,6 @@ class HistoriasFragment : Fragment() {
 
             // Boton para enviar el post
             btnEnviar.setOnClickListener{
-
                 val post = Post(getCurrentUser(),getDateAndTime(),texto.text.toString(),"2",link,categoria.selectedItem.toString())
                 db.collection("Post").add(post)
                 popupWindow.dismiss()
@@ -106,15 +102,11 @@ class HistoriasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getPostsFromFirebase()
-        configureRecyclerView()
+        //configureRecyclerView()
     }
 
 
-    private fun configureRecyclerView() {
-        postsRecyclerView.setHasFixedSize(true)
-        postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        postsRecyclerView.adapter  = PostListAdapter(postsList,requireContext())
-    }
+
 
 
     private fun getPostsFromFirebase() {
@@ -123,18 +115,23 @@ class HistoriasFragment : Fragment() {
             .orderBy("hora", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { snapshot ->
-                if (snapshot != null) {
-
-                    for (post in snapshot) {
-                        postsList.add(post.toObject())
-                        //todo averiguar que se deberia hacer aca con un success de firebase
-                        //mensaje.text = postsList.toString()
-                        //mensaje.text = ""
-
-                    }
+                for (post in snapshot) {
+                    val newPost = post.toObject<Post>()
+                    postsList.add(newPost)
 
                 }
+                configureRecyclerView()
             }
+            .addOnFailureListener { exception ->
+                Toast.makeText(context, "Error getting documents: $exception", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun configureRecyclerView() {
+        postsRecyclerView.setHasFixedSize(true)
+        postsRecyclerView.layoutManager = LinearLayoutManager(context)
+        postsRecyclerView.adapter  = PostListAdapter(postsList,requireContext())
     }
 
 

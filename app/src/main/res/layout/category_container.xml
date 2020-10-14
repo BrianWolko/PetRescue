@@ -16,12 +16,10 @@
         android:layout_height="match_parent">
 
 
-
         <com.flaviofaria.kenburnsview.KenBurnsView
             android:id="@+id/category_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
 
 
         <View

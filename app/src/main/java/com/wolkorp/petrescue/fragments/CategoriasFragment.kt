@@ -2,37 +2,20 @@ package com.wolkorp.petrescue.fragments
 
 
 import android.content.Context
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.CategoriesAdapter
-import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Category
 import kotlinx.android.synthetic.main.fragment_categorias.*
-import com.wolkorp.petrescue.models.Post
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
@@ -41,12 +24,10 @@ class CategoriasFragment : Fragment() {
 
 
     private lateinit var fragmentView: View
-
     //Este es el objeto que permite deslizar las categorias
     private lateinit var categoriesPager: ViewPager2
     //Una lista simple con los objetos que va a mostrar categoriesPager
     private lateinit var categoriesList: ArrayList<Category>
-
 
 
 
@@ -59,16 +40,11 @@ class CategoriasFragment : Fragment() {
 
         //Inicializo los atributos  y views del Fragment
         fragmentView = inflater.inflate(R.layout.fragment_categorias, container, false)
-
         categoriesPager = fragmentView.findViewById(R.id.categoriesViewPager)
         categoriesList = ArrayList()
 
-
-
         return fragmentView
     }
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,17 +91,12 @@ class CategoriasFragment : Fragment() {
     }
 
 
-
-
     private fun addUserName() {
         val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val savedUserName = prefs.getString("userName",null)
 
         mensaje_bienvenida.text = "${mensaje_bienvenida.text} $savedUserName !"
     }
-
-
-
 
 
     //Funcion que se llama cuando el usuario toca una categoria
@@ -135,7 +106,6 @@ class CategoriasFragment : Fragment() {
         val message = "La categoria seleccionda es: ${selectedCategory.categoryName}"
 
         //Snackbar.make(fragmentView, message, Snackbar.LENGTH_LONG).show()
-
         fragmentView.findNavController().navigate(R.id.action_categoriasFragment_to_historiasFragment)
     }
 
