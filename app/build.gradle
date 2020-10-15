@@ -57,18 +57,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    //Firebase Analytics
+    //Firebase Analytics, database, firestore y storage
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-database:16.0.5'
-    implementation 'com.google.firebase:firebase-firestore:21.2.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:21.5.0'
     implementation 'com.google.firebase:firebase-storage-ktx:19.2.0'
 
     //Firebase Auth - for Login
     implementation 'com.google.firebase:firebase-auth-ktx:19.4.0'
-
-    //Firestore para base de datos
-    implementation 'com.google.firebase:firebase-firestore:21.6.0'
 
     //Google Authentication
     implementation 'com.google.android.gms:play-services-auth:18.1.0'

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextSwitcher
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ViewSwitcher
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +15,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
+import com.google.firebase.firestore.ktx.toObject
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PetsAdapter
 import com.wolkorp.petrescue.models.Pet
@@ -25,9 +30,12 @@ import kotlinx.android.synthetic.main.fragment_buscar.*
 class BuscarFragment : Fragment(), OnMapReadyCallback {
 
     //LOS ARIBUTOS DEL FRAGEMNT
-    private lateinit var fragmentView: View
-    private lateinit var petsList: ArrayList<Pet>
+
+    //Listener que escucha cambio en la base de datos
+    private lateinit var registrationListener: ListenerRegistration
+
     private lateinit var reciclerView: RecyclerView
+    private var petsList: ArrayList<Pet> = ArrayList()
 
     private lateinit var locationTextSwitcher: TextSwitcher
     private lateinit var petDescriptionTextSwitcher: TextSwitcher
@@ -50,7 +58,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        fragmentView = inflater.inflate(R.layout.fragment_buscar, container, false)
+        val fragmentView = inflater.inflate(R.layout.fragment_buscar, container, false)
         return fragmentView
     }
 
@@ -59,50 +67,17 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         //Inicializo los atributos del Fragment
-        petsList = ArrayList()
         reciclerView = view.findViewById(R.id.pets_list)
         locationTextSwitcher = view.findViewById(R.id.location_text_switcher)
         petDescriptionTextSwitcher = view.findViewById(R.id.description_text_switcher)
 
-        createAndAddPets()
-        setUpReciclerView()
+        configureRecyclerView()
+        getPetsFromFirebase()
         setUpTextSwitcher()
     }
 
 
-    private fun createAndAddPets() {
-
-        //Por ahora para probar que funciona dejo esta parte hardcodeada
-        val pet1 = Pet("Mascota 1", -34.6129, -58.4329, "Mar 28", "8:00", "https://thegoldenscope.files.wordpress.com/2014/05/cani-randagi-1-spiegel-de.jpg")
-        val pet2 = Pet("Mascota 2", -34.5948, -58.4354, "Mar 30", "18:00","https://i.redd.it/c8z2xyougzj31.jpg")
-        val pet3 = Pet("Mascota 3", -34.5924, -58.4650, "Abr 2", "16:00","https://images.newindianexpress.com/uploads/user/imagelibrary/2020/4/6/w1200X800/doggo.JPG")
-        val pet4 = Pet("Mascota 4", -34.5628, -58.4984, "May 1", "7:00","https://cdnuploads.aa.com.tr/uploads/Contents/2020/04/05/thumbs_b_c_af7544b5879e3faa0eb3ebcaa6a44f20.jpg?v=21143")
-        val pet5 = Pet("Mascota 5", -34.5715, -58.4205, "May 22", "12:00","https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Stray_dogs_crosswalk.jpg/1024px-Stray_dogs_crosswalk.jpg")
-        val pet6 = Pet("Mascota 6", -34.6251, -58.3973, "Jun 4", "8:00","https://yabangee.com/wp-content/uploads/Cat5.jpg")
-        val pet7 = Pet("Mascota 7", -34.6092, -58.3891, "Jun 18", "8:40","https://steemitimages.com/DQmdRLBWGw6iVt5MEkNjeLwHHbVFnShNXXmYbShcyryXyt4/DSC_01612.jpg")
-        val pet8 = Pet("Mascota 8", -34.5952, -58.3800, "Jul 25", "13:00","https://i.insider.com/5cd2f20c93a15226895f5ef2?width=1100&format=jpeg&auto=webp")
-        val pet9 = Pet("Mascota 9", -34.6297, -58.3706, "Aug 7", "20:00","https://i.redd.it/rrcw06uuijh21.jpg")
-        val pet10 = Pet("Mascota 10", -34.6595, -58.4896, "Aug 9", "16:00","https://img-aws.ehowcdn.com/750x428p/s3.amazonaws.com/cuteness_data/s3fs-public/diy_blog/Facts-About-Street-Dogs-in-Mexico.jpg")
-        val pet11 = Pet("Mascota 11", -34.5200, -58.4815, "Sep 1", "22:30","https://aristotleguide.files.wordpress.com/2015/09/man-petting-strays-syntagma-athens.jpg")
-        val pet12 = Pet("Mascota 12", -34.6157, -58.4178, "Sep 5", "7:30","https://myanimals.com/wp-content/uploads/2018/03/dog-in-street-461x306.jpg")
-
-
-        petsList.add(pet1)
-        petsList.add(pet2)
-        petsList.add(pet3)
-        petsList.add(pet4)
-        petsList.add(pet5)
-        petsList.add(pet6)
-        petsList.add(pet7)
-        petsList.add(pet8)
-        petsList.add(pet9)
-        petsList.add(pet10)
-        petsList.add(pet11)
-        petsList.add(pet12)
-    }
-
-
-    private fun setUpReciclerView() {
+    private fun configureRecyclerView() {
         reciclerView.adapter = PetsAdapter(petsList, requireContext())
         reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
         CardSnapHelper().attachToRecyclerView(reciclerView);
@@ -116,6 +91,34 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         })
+    }
+
+
+    private fun getPetsFromFirebase() {
+        //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
+        val query =  FirebaseFirestore.getInstance().collection("Pets").orderBy("fecha", Query.Direction.DESCENDING)
+
+        registrationListener = query.addSnapshotListener { snapshot, error  ->
+            if (error != null) {
+                //todo handle error
+                Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            petsList.clear()
+            for (pet in snapshot!!) {
+                petsList.add(pet.toObject())
+            }
+
+            //Es importante que este metodo se llame despues de haber llenado la lista
+            //con los posts, sino no se muestra nada en el recyclerView
+            updatePetsList()
+        }
+    }
+
+
+    private fun updatePetsList() {
+        reciclerView.adapter = PetsAdapter(petsList, requireContext())
     }
 
 
@@ -193,6 +196,11 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
 
         locationTextSwitcher.setText(locationMessage)
         petDescriptionTextSwitcher.setText(descriptionMessage)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        registrationListener.remove()
     }
 
 

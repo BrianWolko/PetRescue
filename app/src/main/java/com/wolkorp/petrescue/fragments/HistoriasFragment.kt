@@ -4,17 +4,16 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
@@ -31,8 +30,8 @@ class HistoriasFragment : Fragment() {
 
     //LOS ARIBUTOS DEL FRAGEMNT
     private val db = FirebaseFirestore.getInstance()
-
-    private lateinit var fragmentView: View
+    //Listener que escucha cambio en la base de datos
+    private lateinit var registrationListener: ListenerRegistration
 
     private lateinit var postsRecyclerView: RecyclerView
     //Una lista simple con los objetos que va a mostrar postsRecyclerView
@@ -57,7 +56,7 @@ class HistoriasFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
+        val fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
         postsRecyclerView = fragmentView.findViewById(R.id.rec_posts)
         btnAddPost = fragmentView.findViewById(R.id.btnAddPost)
         storageReference  = FirebaseStorage.getInstance().reference
@@ -65,7 +64,7 @@ class HistoriasFragment : Fragment() {
         // Boton para abrir el popup
         btnAddPost.setOnClickListener{
 
-            val popupView: View = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
+            val popupView = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
             val popupWindow = PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
 
             btnSalir = popupView.findViewById(R.id.btnSalir)
@@ -99,49 +98,12 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        getPostsFromFirebase()
-        //configureRecyclerView()
-    }
-
-
-
-
-
-    private fun getPostsFromFirebase() {
-        //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
-        db.collection("Post")
-            .orderBy("hora", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                for (post in snapshot) {
-                    val newPost = post.toObject<Post>()
-                    postsList.add(newPost)
-
-                }
-                configureRecyclerView()
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(context, "Error getting documents: $exception", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-
-    private fun configureRecyclerView() {
-        postsRecyclerView.setHasFixedSize(true)
-        postsRecyclerView.layoutManager = LinearLayoutManager(context)
-        postsRecyclerView.adapter  = PostListAdapter(postsList,requireContext())
-    }
-
-
     private fun selectImageFromGallery() {
-        val intent = Intent()
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-
         startActivityForResult(Intent.createChooser(intent, "Please select..."), PICK_IMAGE_CODE)
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -160,8 +122,13 @@ class HistoriasFragment : Fragment() {
         refStorage.putFile(fileUri)
 
         val APP_NAME = "pet-rescue-4f2a1"
-
         link = "https://firebasestorage.googleapis.com/v0/b/" + APP_NAME + ".appspot.com/o/ImgsPost%2F" + fileName + "?alt=media"
+    }
+
+
+    private fun getCurrentUser() : String? {
+        val user = FirebaseAuth.getInstance().currentUser
+        return user?.email
     }
 
 
@@ -172,10 +139,44 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    private fun getCurrentUser() : String? {
-        val user = FirebaseAuth.getInstance().currentUser
-        return user?.email
+    override fun onStart() {
+        super.onStart()
+        getPostsFromFirebase()
     }
 
+
+    private fun getPostsFromFirebase() {
+        //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
+        val query =  db.collection("Post").orderBy("hora", Query.Direction.DESCENDING)
+
+        registrationListener = query.addSnapshotListener { snapshot, error  ->
+            if (error != null) {
+                //todo handle error
+                Toast.makeText(context, "Error getting posts", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            postsList.clear()
+            for (post in snapshot!!) {
+                postsList.add(post.toObject())
+            }
+
+            //Es importante que este metodo se llame despues de haber llenado la lista
+            //con los posts, sino no se muestra nada en el recyclerView
+            configureRecyclerView()
+        }
+    }
+
+
+    private fun configureRecyclerView() {
+        postsRecyclerView.setHasFixedSize(true)
+        postsRecyclerView.adapter  = PostListAdapter(postsList,requireContext())
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        registrationListener.remove()
+    }
 
 }

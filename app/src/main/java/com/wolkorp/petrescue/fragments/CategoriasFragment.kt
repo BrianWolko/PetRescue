@@ -59,9 +59,9 @@ class CategoriasFragment : Fragment() {
     private fun createAndAddCategories() {
         //Category es la clase que esta en la carpeta models y simplemente contiene dos atributos string
         //Aca el url de la imagen esta hardcodeado, porque si va a mostrar siempre las mismas imagenes y solo son 3 categorias quizas es mas simple asi
-        val categoriaBuscarFamilia = Category("https://www.publinews.gt/gt/wp-content/uploads/2016/05/24/mascotas-en-familia-1.jpg", "Buscar Familia", "Esta es la categoria pra encontrar familias")
+        val categoriaBuscarFamilia = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_familia.jpg?alt=media", "Buscar Familia", "Publicaciones relacionadas con ")
         val categoriaBuscarChofer = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_chofer.jpg?alt=media", "Buscar Chofer", "Busqueda de choferes para transportar mascotas")
-        val categoriaAsesoria = Category("https://s.hdnux.com/photos/01/12/16/42/19458232/3/920x920.jpg", "Asesoria", "Ayuda con informacion general par ayudar ....")
+        val categoriaAsesoria = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fasesoria_mascotas.jpg?alt=media", "Asesoria", "Informacion general par ayudar ....")
 
         categoriesList.add(categoriaBuscarFamilia)
         categoriesList.add(categoriaBuscarChofer)
