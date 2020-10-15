@@ -34,7 +34,7 @@ class PostListAdapter(private var postList : MutableList<Post>,var context: Cont
     }
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
-        holder.setName(postList[position].nombre)
+        holder.setName(postList[position].nombreUsuario)
         holder.setHora(postList[position].hora)
         holder.setTexto(postList[position].texto)
 

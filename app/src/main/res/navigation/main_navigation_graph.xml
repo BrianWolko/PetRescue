@@ -40,6 +40,10 @@
         android:id="@+id/historiasFragment"
         android:name="com.wolkorp.petrescue.fragments.HistoriasFragment"
         android:label="fragment_historias"
-        tools:layout="@layout/fragment_historias" />
+        tools:layout="@layout/fragment_historias" >
+        <argument
+            android:name="selectedCategory"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

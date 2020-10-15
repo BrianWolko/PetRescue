@@ -21,15 +21,8 @@ import kotlinx.android.synthetic.main.fragment_register.*
 
 class RegisterFragment : Fragment() {
 
-
-    private lateinit var auth: FirebaseAuth
+    //Es un atributo porque se necesita para navegar a MainActivity
     private lateinit var fragmentView: View
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,65 +41,77 @@ class RegisterFragment : Fragment() {
 
 
     //Funcion de Registro, captura el mail y la contraseña y crea un nuevo usuario en Firebase
-    private fun setUpRegisterButton(){
+    private fun setUpRegisterButton() {
 
         registerButton.setOnClickListener {
 
             val email = registerEmailEditText.text.toString()
             val password = registerPasswordEditText.text.toString()
             val userName = registerNameEditText.text.toString()
+            val userLastName = registerLastNameEditText.text.toString()
 
             //Si alguno de los campos esta vacio, sale de la funcion
-            if(email.isEmpty() || password.isEmpty() || userName.isEmpty()) {
+            if(email.isEmpty() || password.isEmpty() || userName.isEmpty() || userLastName.isEmpty()) {
                 Toast.makeText(context, "Los campos no pueden estar vacios", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    //Registro exitoso, guarda datos y navega hacia activity main
-                    saveUserLocally(email, userName)
-                    saveUserToFirestore(email, userName)
+            FirebaseAuth
+                .getInstance()
+                .createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        //Registro exitoso, guarda datos y navega hacia MainActivity
+                        saveUserLocally(email, userName,userLastName)
+                        saveUserToFirestore(email, userName, userLastName)
 
-                } else {
-                    // No se pudo registrar, mostrar mensaje de fallo.
-                    // Podria mejorarse y hacer mas cosas que solo mostrar un mensaje
-                    Toast.makeText(context, "No se pudo crear tu cuenta. \nIntenta de nuevo", Toast.LENGTH_SHORT).show()
-                }
+                    } else {
+                        // No se pudo registrar, mostrar mensaje de fallo.
+                        //todo Podria mejorarse y hacer mas cosas que solo mostrar un mensaje
+                        Toast.makeText(context, "No se pudo crear tu cuenta. \nIntenta de nuevo", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }
 
 
-
-    private fun saveUserLocally(email: String, userName: String) {
+    private fun saveUserLocally(email: String, userName: String, userLastName: String) {
         val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email", email)
         prefs.putString("userName", userName)
+        prefs.putString("userLastName", userLastName)
         prefs.apply()
     }
 
 
-    private fun saveUserToFirestore(email: String, userName: String) {
+    //Crea un objeto usuario y lo envia a firebase
+    private fun saveUserToFirestore(email: String, userName: String, userLastName: String) {
 
-        //todo esta no es la correcta
+        //Ocupa el mismo uid de FirebaseAuth como id del documento de firestore
         val uid = FirebaseAuth.getInstance().uid ?: "No id"
-        //Por ahora el numero de telefono y el url de la imagen van vacios
-        val user = User(uid, userName, email, "", "")
+        //Al momento de registrarse el numero de telefono y el url de la imagen van vacios
+        val user = User(uid, userName, userLastName, email, "", "")
 
         FirebaseFirestore
             .getInstance()
             .collection("Users")
-            .add(user)
+            .document(uid)
+            .set(user)
             .addOnSuccessListener { documentReference ->
                 Toast.makeText(context, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
-                //Si se agrega con exito el usuario se Navega al MainActivity
-                fragmentView.findNavController().navigate(R.id.action_registerFragment_to_homeActivity)
+                navigateToMainActivity()
 
             }
             .addOnFailureListener { e ->
+                //todo podria mejorarse el manejo de errores
                 Toast.makeText(context, "No se pudo crear tu cuenta. \nIntenta de nuevo", Toast.LENGTH_SHORT).show()
             }
+    }
+
+
+    private fun navigateToMainActivity() {
+        //Solo debe llamarse si se registro con exito al usuario
+        fragmentView.findNavController().navigate(R.id.action_registerFragment_to_homeActivity)
     }
 
 }

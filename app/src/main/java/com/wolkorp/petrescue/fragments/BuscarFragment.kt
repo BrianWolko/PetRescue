@@ -34,7 +34,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
     //Listener que escucha cambio en la base de datos
     private lateinit var registrationListener: ListenerRegistration
 
-    private lateinit var reciclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private var petsList: ArrayList<Pet> = ArrayList()
 
     private lateinit var locationTextSwitcher: TextSwitcher
@@ -58,8 +58,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val fragmentView = inflater.inflate(R.layout.fragment_buscar, container, false)
-        return fragmentView
+        return inflater.inflate(R.layout.fragment_buscar, container, false)
     }
 
 
@@ -67,7 +66,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         //Inicializo los atributos del Fragment
-        reciclerView = view.findViewById(R.id.pets_list)
+        recyclerView = view.findViewById(R.id.pets_list)
         locationTextSwitcher = view.findViewById(R.id.location_text_switcher)
         petDescriptionTextSwitcher = view.findViewById(R.id.description_text_switcher)
 
@@ -78,12 +77,12 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun configureRecyclerView() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext())
-        reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
-        CardSnapHelper().attachToRecyclerView(reciclerView);
+        recyclerView.adapter = PetsAdapter(petsList, requireContext())
+        recyclerView.layoutManager = CardSliderLayoutManager(requireContext())
+        CardSnapHelper().attachToRecyclerView(recyclerView);
 
         //Se activa cuando se desliza  el RecyclerView
-        reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //El RecyclerView paro de moverse
@@ -94,9 +93,46 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
     }
 
 
+    //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
+    //el reciclerView deja de moverse
+    private fun reciclerViewStoppedScrolling() {
+
+        val recivlerViewManager = recyclerView.layoutManager as CardSliderLayoutManager
+        //Me da la posicion del principal item que se muestra en el recicler view
+        val position = recivlerViewManager.getActiveCardPosition()
+
+        //val petDescription = petsList.get(position).descripcion
+        val latitude = petsList.get(position).latitud
+        val longitude = petsList.get(position).longitud
+        val fecha = petsList.get(position).fecha
+        val hora = petsList.get(position).hora
+
+        moveMapTo(latitude, longitude)
+        updateText(fecha, hora)
+    }
+
+
+    private fun moveMapTo(latitude: Double, longitude: Double) {
+        val localizacion = LatLng(latitude, longitude)
+
+        mapa.addMarker(MarkerOptions().position(localizacion).title("$localizacion"))
+        mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacion, 14f))
+    }
+
+
+    private fun updateText(fecha: String, hora: String) {
+        //todo: falta agregar casos de excepciones donde alguno de los datos no este disponible
+        val locationMessage = "$fecha -  $hora"
+        val descriptionMessage = "Aca deberia cambiar la descripcion de la mascota"
+
+        locationTextSwitcher.setText(locationMessage)
+        petDescriptionTextSwitcher.setText(descriptionMessage)
+    }
+
+
+    //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
     private fun getPetsFromFirebase() {
-        //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
-        val query =  FirebaseFirestore.getInstance().collection("Pets").orderBy("fecha", Query.Direction.DESCENDING)
+        val query =  FirebaseFirestore.getInstance().collection("Pets").orderBy("descripcion", Query.Direction.ASCENDING)
 
         registrationListener = query.addSnapshotListener { snapshot, error  ->
             if (error != null) {
@@ -118,7 +154,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun updatePetsList() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext())
+        recyclerView.adapter = PetsAdapter(petsList, requireContext())
     }
 
 
@@ -151,52 +187,15 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        if(googleMap != null) {
+           //todo que pasa si google map es null
             mapa = googleMap
             // Agrega marcador en centro de Buenos Aires y mueve la camara
             val buenosAires = LatLng(-34.6099, -58.4290)
             mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
             mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
-        }
+
     }
 
-
-    //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
-    //el reciclerView deja de moverse
-    private fun reciclerViewStoppedScrolling() {
-
-        val recivlerViewManager = reciclerView.layoutManager as CardSliderLayoutManager
-        //Me da la posicion del principal item que se muestra en el recicler view
-        val position = recivlerViewManager.getActiveCardPosition()
-
-        //val petDescription = petsList.get(position).descripcion
-        val latitude = petsList.get(position).latidud
-        val longitude = petsList.get(position).longitud
-        val fecha = petsList.get(position).fecha
-        val hora = petsList.get(position).hora
-
-        moveMapTo(latitude, longitude)
-        updateText(fecha, hora)
-    }
-
-
-    private fun moveMapTo(latitude: Double, longitude: Double) {
-        val localizacion = LatLng(latitude, longitude)
-
-        mapa.addMarker(MarkerOptions().position(localizacion).title("Perrito"))
-        mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(localizacion, 14f))
-    }
-
-
-    private fun updateText(fecha: String, hora: String) {
-        //todo: falta agregar casos de excepciones donde alguno de los datos no este disponible
-
-        val locationMessage = "$fecha -  $hora"
-        val descriptionMessage = "Aca deberia cambiar la descripcion de la mascota"
-
-        locationTextSwitcher.setText(locationMessage)
-        petDescriptionTextSwitcher.setText(descriptionMessage)
-    }
 
     override fun onStop() {
         super.onStop()

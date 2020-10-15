@@ -102,11 +102,11 @@ class CategoriasFragment : Fragment() {
     //Funcion que se llama cuando el usuario toca una categoria
     //aca es donde se trabajara despues para cargar las historias de la categoria selecionada
     private fun onItemClick(position: Int) {
-        val selectedCategory = categoriesList[position]
-        val message = "La categoria seleccionda es: ${selectedCategory.categoryName}"
+        val selectedCategory = categoriesList[position].categoryName
 
-        //Snackbar.make(fragmentView, message, Snackbar.LENGTH_LONG).show()
-        fragmentView.findNavController().navigate(R.id.action_categoriasFragment_to_historiasFragment)
+        //Guarda la categoria en las clases autogeneradas del navgraph para pasar a otro fragment
+        val action = CategoriasFragmentDirections.actionCategoriasFragmentToHistoriasFragment(selectedCategory)
+        fragmentView.findNavController().navigate(action)
     }
 
 

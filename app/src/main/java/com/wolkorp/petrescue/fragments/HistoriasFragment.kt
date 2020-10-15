@@ -1,6 +1,7 @@
 package com.wolkorp.petrescue.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +22,7 @@ import com.google.firebase.storage.StorageReference
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -45,7 +47,7 @@ class HistoriasFragment : Fragment() {
     private lateinit var categoria : Spinner
     private lateinit var storageReference : StorageReference
 
-    private var link =""
+    private var linkImagen =""
     private val PICK_IMAGE_CODE = 1000
 
 
@@ -86,14 +88,19 @@ class HistoriasFragment : Fragment() {
 
             // Boton para enviar el post
             btnEnviar.setOnClickListener{
-                val post = Post(getCurrentUser(),getDateAndTime(),texto.text.toString(),"2",link,categoria.selectedItem.toString())
+                val fullName = getCurrentUserName()
+                val horaPost = getDateAndTime()
+                val textoPost = texto.text.toString()
+                val categoriaSeleccionada = categoria.selectedItem.toString()
+                val idUsuario = FirebaseAuth.getInstance().uid ?: "No id"
+
+                val post = Post(fullName, horaPost, textoPost,linkImagen, categoriaSeleccionada, idUsuario)
                 db.collection("Post").add(post)
+
                 popupWindow.dismiss()
             }
-
             popupWindow.showAsDropDown(btnAddPost)
         }
-
         return fragmentView
     }
 
@@ -122,20 +129,25 @@ class HistoriasFragment : Fragment() {
         refStorage.putFile(fileUri)
 
         val APP_NAME = "pet-rescue-4f2a1"
-        link = "https://firebasestorage.googleapis.com/v0/b/" + APP_NAME + ".appspot.com/o/ImgsPost%2F" + fileName + "?alt=media"
+        linkImagen = "https://firebasestorage.googleapis.com/v0/b/" + APP_NAME + ".appspot.com/o/ImgsPost%2F" + fileName + "?alt=media"
     }
 
 
-    private fun getCurrentUser() : String? {
-        val user = FirebaseAuth.getInstance().currentUser
-        return user?.email
+    private fun getCurrentUserName() : String {
+        val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val userName = prefs.getString("userName",null)
+        val userLastName = prefs.getString("userLastName",null)
+
+        //todo: manejar el caso de que savedUserName sea null, aunque nunca deberia porque RegisterFragment
+        //todo: no deberia permitir registrado de un usuario sino guarda su nombre
+        return "$userName $userLastName"
     }
 
 
     private fun getDateAndTime(): String {
-        val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-        val currentDateandTime: String = simpleDateFormat.format(Date())
-        return currentDateandTime
+        val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date())
+        return dateFormat
+
     }
 
 
@@ -146,13 +158,23 @@ class HistoriasFragment : Fragment() {
 
 
     private fun getPostsFromFirebase() {
-        //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
-        val query =  db.collection("Post").orderBy("hora", Query.Direction.DESCENDING)
 
+        //Argumento obtenido con clases autogeneradas del navgraph
+        val selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
+
+        //Devuelve los post en firebase que coincidan con la categoria que se toco
+        val query =  db
+                            .collection("Post")
+                            .whereEqualTo("categoria", selectedCategory)
+                           // .orderBy("hora", Query.Direction.DESCENDING)
+
+        //El registration listener lo guardo porque se necesita para desactivar el listener cuando el fragment no esta activo
         registrationListener = query.addSnapshotListener { snapshot, error  ->
             if (error != null) {
                 //todo handle error
                 Toast.makeText(context, "Error getting posts", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "$error", Toast.LENGTH_LONG).show()
+
                 return@addSnapshotListener
             }
 
@@ -163,12 +185,12 @@ class HistoriasFragment : Fragment() {
 
             //Es importante que este metodo se llame despues de haber llenado la lista
             //con los posts, sino no se muestra nada en el recyclerView
-            configureRecyclerView()
+            updateRecyclerView()
         }
     }
 
 
-    private fun configureRecyclerView() {
+    private fun updateRecyclerView() {
         postsRecyclerView.setHasFixedSize(true)
         postsRecyclerView.adapter  = PostListAdapter(postsList,requireContext())
     }
