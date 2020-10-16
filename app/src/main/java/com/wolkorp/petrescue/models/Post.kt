@@ -1,15 +1,16 @@
 package com.wolkorp.petrescue.models
 
 
-class Post(nombre: String?, hora: String?, texto: String?, id: String?, urlImg : String?,categoria : String?){
+class Post(nombre: String?, hora: String?, texto: String?, id: String?, urlImg : String?,categoria : String?,activo : Boolean){
     var nombre: String = ""
     var hora: String = ""
     var texto: String = ""
     var id: String =""
     var urlImg: String = ""
     var categoria : String = ""
+    var activo: Boolean = true
 
-    constructor() : this("","","","","","")
+    constructor() : this("","","","","","",true)
 
     init {
         this.nombre = nombre!!
@@ -18,6 +19,7 @@ class Post(nombre: String?, hora: String?, texto: String?, id: String?, urlImg :
         this.id=id!!
         this.urlImg=urlImg!!
         this.categoria=categoria!!
+        this.activo=activo!!
     }
 
 }

@@ -12,4 +12,7 @@
         <item>Buscar asesoria</item>
     </string-array>
 
+    <string name="contacto"><s>Contacto</s></string>
+
+
 </resources>
