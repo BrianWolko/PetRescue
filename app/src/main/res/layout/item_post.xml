@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_item"
+            android:id="@+id/txt_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -48,7 +48,7 @@
             android:text="Hace 1 hora"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/txt_item" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_user_name" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -80,7 +80,6 @@
             android:layout_marginStart="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline"
-
             app:srcCompat="@android:mipmap/sym_def_app_icon" />
 
         <ImageView

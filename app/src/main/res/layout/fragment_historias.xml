@@ -10,29 +10,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rec_posts"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddPost" />
-
-
-    <Button
-        android:id="@+id/btnAddPost"
-        android:layout_width="52dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="340dp"
-        android:layout_marginTop="4dp"
-        android:background="#00D3C3C3"
-        android:foreground="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toTopOf="@+id/categoriesViewPager"
-        app:layout_constraintEnd_toStartOf="@+id/profile_picture"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.086" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

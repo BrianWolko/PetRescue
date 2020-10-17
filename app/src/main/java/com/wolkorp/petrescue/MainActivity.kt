@@ -38,6 +38,12 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
+    // Hace funcionar el back button del ActionBar
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.mainFragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
 
 
 

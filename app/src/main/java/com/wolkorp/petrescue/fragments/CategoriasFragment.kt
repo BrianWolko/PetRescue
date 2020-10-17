@@ -22,13 +22,11 @@ import kotlin.math.abs
 
 class CategoriasFragment : Fragment() {
 
-
     private lateinit var fragmentView: View
     //Este es el objeto que permite deslizar las categorias
     private lateinit var categoriesPager: ViewPager2
     //Una lista simple con los objetos que va a mostrar categoriesPager
     private lateinit var categoriesList: ArrayList<Category>
-
 
 
 
@@ -42,7 +40,6 @@ class CategoriasFragment : Fragment() {
         fragmentView = inflater.inflate(R.layout.fragment_categorias, container, false)
         categoriesPager = fragmentView.findViewById(R.id.categoriesViewPager)
         categoriesList = ArrayList()
-
         return fragmentView
     }
 
@@ -61,7 +58,7 @@ class CategoriasFragment : Fragment() {
         //Aca el url de la imagen esta hardcodeado, porque si va a mostrar siempre las mismas imagenes y solo son 3 categorias quizas es mas simple asi
         val categoriaBuscarFamilia = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_familia.jpg?alt=media", "Buscar Familia", "Publicaciones relacionadas con ")
         val categoriaBuscarChofer = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_chofer.jpg?alt=media", "Buscar Chofer", "Busqueda de choferes para transportar mascotas")
-        val categoriaAsesoria = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fasesoria_mascotas.jpg?alt=media", "Asesoria", "Informacion general par ayudar ....")
+        val categoriaAsesoria = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fasesoria_mascotas.jpg?alt=media", "Asesoria", "Informacion de uso general para ....")
 
         categoriesList.add(categoriaBuscarFamilia)
         categoriesList.add(categoriaBuscarChofer)
@@ -100,7 +97,6 @@ class CategoriasFragment : Fragment() {
 
 
     //Funcion que se llama cuando el usuario toca una categoria
-    //aca es donde se trabajara despues para cargar las historias de la categoria selecionada
     private fun onItemClick(position: Int) {
         val selectedCategory = categoriesList[position].categoryName
 

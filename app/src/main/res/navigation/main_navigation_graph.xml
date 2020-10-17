@@ -44,6 +44,18 @@
         <argument
             android:name="selectedCategory"
             app:argType="string" />
+        <action
+            android:id="@+id/action_historiasFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.wolkorp.petrescue.fragments.PostDetailFragment"
+        android:label="fragment_post_detail"
+        tools:layout="@layout/fragment_post_detail" >
+        <argument
+            android:name="selectedPost"
+            app:argType="com.wolkorp.petrescue.models.Post" />
     </fragment>
 
 </navigation>

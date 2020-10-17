@@ -130,9 +130,12 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
+    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
     private fun getPetsFromFirebase() {
-        val query =  FirebaseFirestore.getInstance().collection("Pets").orderBy("descripcion", Query.Direction.ASCENDING)
+        val query =  FirebaseFirestore
+                             .getInstance()
+                             .collection("Pets")
+                             .orderBy("descripcion", Query.Direction.ASCENDING)
 
         registrationListener = query.addSnapshotListener { snapshot, error  ->
             if (error != null) {
