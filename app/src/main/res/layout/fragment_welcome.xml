@@ -76,6 +76,7 @@ android:textStyle="bold"            />
                 android:layout_weight="1"
                 android:background="@drawable/rounded_button_green"
                 android:text="Ingresar"
+                android:textAllCaps="false"
                 android:textColor="#ECEFF1"/>
 
         </LinearLayout>

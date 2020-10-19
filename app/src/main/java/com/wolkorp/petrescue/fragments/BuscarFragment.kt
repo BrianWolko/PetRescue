@@ -1,9 +1,9 @@
 package com.wolkorp.petrescue.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.Button
 import android.widget.TextSwitcher
 import android.widget.TextView
 import android.widget.ViewSwitcher
@@ -14,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
 import com.wolkorp.petrescue.R
@@ -34,6 +35,12 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapa: GoogleMap
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -52,6 +59,12 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_buscar, container, false)
         return fragmentView
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.buscar_fragment_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
 
@@ -103,7 +116,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun setUpReciclerView() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext())
+        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
         reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
         CardSnapHelper().attachToRecyclerView(reciclerView);
 
@@ -193,6 +206,65 @@ class BuscarFragment : Fragment(), OnMapReadyCallback {
 
         locationTextSwitcher.setText(locationMessage)
         petDescriptionTextSwitcher.setText(descriptionMessage)
+    }
+
+
+    // Funcion que se llama cuando se toca el botton de la ActionBar
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            // Boton para abrir el popup
+            R.id.menu_add_pet_location -> {
+                // todo:  mostrar el popup view
+                showBottomSheetView()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    // Muestra un Bottom Sheet que contiene los campos necesarios para subir una nueva mascota
+    private fun showBottomSheetView() {
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetTheme)
+        val addPetBottomSheet = LayoutInflater
+            .from(requireContext().applicationContext)
+            .inflate(R.layout.bottom_sheet_add_pet_location, fragmentView.findViewById(R.id.bottomSheetContainer))
+
+
+        val uploadPetButton: Button = addPetBottomSheet.findViewById(R.id.buttonUploadPet)
+        uploadPetButton.setOnClickListener {
+           // todo: Subir mascota a firebase
+            bottomSheetDialog.dismiss()
+        }
+
+        val dismmissButton: Button = addPetBottomSheet.findViewById(R.id.button_dismiss)
+        dismmissButton.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+
+        val addPhotoButton: Button = addPetBottomSheet.findViewById(R.id.button_add_photo)
+        addPhotoButton.setOnClickListener {
+            Log.d("BuscarFragment", "Se toco el button agregar foto")
+
+        }
+
+
+
+        bottomSheetDialog.setContentView(addPetBottomSheet)
+        bottomSheetDialog.show()
+
+    }
+
+
+    //Funcion que se llama cuando el usuario toca una Mascota
+    private fun onPetClick(selectedPet: Pet) {
+        Log.d("BuscarFragment", "La mascota tocada es ${selectedPet.fecha}")
+
+        // todo:    Cambiar estas por las correspondientes a una masctoa en ves de post
+        //val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(selectedPost)
+        //fragmentView.findNavController().navigate(action)
     }
 
 
