@@ -52,10 +52,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTexto" />
+        app:layout_constraintTop_toBottomOf="@+id/texto_descripcion_mascota" />
 
     <EditText
-        android:id="@+id/txtTexto"
+        android:id="@+id/texto_descripcion_mascota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="192dp"
@@ -78,7 +78,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnFotos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTexto"
+        app:layout_constraintTop_toBottomOf="@+id/texto_descripcion_mascota"
         />
 
 

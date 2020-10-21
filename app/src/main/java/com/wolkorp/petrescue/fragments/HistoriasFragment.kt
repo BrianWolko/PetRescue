@@ -6,12 +6,10 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import android.widget.Toast
 import android.view.WindowManager
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -22,15 +20,12 @@ import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.CategoriesAdapter
 import com.wolkorp.petrescue.adapters.PostListAdapter
@@ -41,7 +36,6 @@ import com.wolkorp.petrescue.models.Post
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.PI
 
 
 class HistoriasFragment : Fragment() {
@@ -103,7 +97,7 @@ class HistoriasFragment : Fragment() {
         btnSalir = popupView.findViewById(R.id.btnSalir)
         btnEnviar = popupView.findViewById(R.id.btnEnviar)
         btnFoto = popupView.findViewById(R.id.btnFotos)
-        texto = popupView.findViewById(R.id.txtTexto)
+        texto = popupView.findViewById(R.id.texto_descripcion_mascota)
         categoria = popupView.findViewById(R.id.spinnerCategorias)
 
         popupWindow.setFocusable(true)

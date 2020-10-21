@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextSwitcher
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +47,7 @@ class PetsAdapter(private var petsList: ArrayList<Pet>, private val context: Con
         holder.getCardLayout().setOnClickListener {
             onPetClicked(petsList[position])
         }
+
     }
 
 
@@ -70,6 +72,7 @@ class PetsAdapter(private var petsList: ArrayList<Pet>, private val context: Con
         fun getCardLayout(): CardView {
             return holderView.findViewById(R.id.pet_container)
         }
+
 
     }
 
