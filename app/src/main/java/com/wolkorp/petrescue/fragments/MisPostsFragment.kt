@@ -29,7 +29,7 @@ class MisPostsFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
 
     private lateinit var linearLayoutManager: LinearLayoutManager
-    private lateinit var postListAdapter: MiPostsAdapter
+    private lateinit var miPostAdapter: MiPostsAdapter
     private lateinit var fragmentView: View
     private lateinit var rec_mis_posts: RecyclerView
     var posts = ArrayList<Post>()
@@ -56,7 +56,7 @@ class MisPostsFragment : Fragment() {
 
 
         getPostsFromFirebase()
-        configureRecyclerView()
+
 
     }
 
@@ -79,13 +79,13 @@ class MisPostsFragment : Fragment() {
     //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
     private fun  getPostsFromFirebase(){
         val query = db
-            .collection("Post").whereEqualTo("nombre",FirebaseAuth.getInstance().currentUser?.email)
-            db.collection("Post").whereEqualTo("activo",true)
+            .collection("Post").whereEqualTo("nombre",FirebaseAuth.getInstance().currentUser?.email).whereEqualTo("activo",true)
             query.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
                     return@addSnapshotListener
                 }
+                posts.clear()
                 if (snapshot != null ) {
                     for (post in snapshot) {
                         posts.add(post.toObject())
@@ -102,8 +102,8 @@ class MisPostsFragment : Fragment() {
         linearLayoutManager = LinearLayoutManager(context)
         rec_mis_posts.layoutManager = linearLayoutManager
 
-        postListAdapter = MiPostsAdapter(posts,requireContext())
-        rec_mis_posts.adapter = postListAdapter
+        miPostAdapter = MiPostsAdapter(posts,requireContext())
+        rec_mis_posts.adapter = miPostAdapter
     }
 
 }

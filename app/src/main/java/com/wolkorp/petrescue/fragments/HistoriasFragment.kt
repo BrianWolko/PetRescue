@@ -120,7 +120,7 @@ class HistoriasFragment : Fragment() {
             // Boton para enviar el post
         btnEnviar.setOnClickListener{
 
-            val post = Post(getCurrentUser(),obtenerHora(),texto.text.toString(),"2",link,categoria.selectedItem.toString())
+            val post = Post(getCurrentUser(),obtenerHora(),texto.text.toString(),"2",link,categoria.selectedItem.toString(),true)
             db.collection("Post").add(post)
             popupWindow.dismiss()
         }
@@ -193,6 +193,7 @@ class HistoriasFragment : Fragment() {
         //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
         db.collection("Post")
             .orderBy("hora", Query.Direction.DESCENDING)
+
             .get()
 
             .addOnSuccessListener { snapshot ->
