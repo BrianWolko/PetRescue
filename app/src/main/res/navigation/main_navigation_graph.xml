@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation_graph"
-    app:startDestination="@id/historiasFragment">
+    app:startDestination="@id/categoriasFragment">
 
     <fragment
         android:id="@+id/buscarFragment"
@@ -12,10 +12,14 @@
         tools:layout="@layout/fragment_buscar" />
 
     <fragment
-        android:id="@+id/historiasFragment"
-        android:name="com.wolkorp.petrescue.fragments.HistoriasFragment"
-        android:label="Historias"
-        tools:layout="@layout/fragment_historias" />
+        android:id="@+id/categoriasFragment"
+        android:name="com.wolkorp.petrescue.fragments.CategoriasFragment"
+        android:label="Categorias"
+        tools:layout="@layout/fragment_categorias" >
+        <action
+            android:id="@+id/action_categoriasFragment_to_historiasFragment"
+            app:destination="@id/historiasFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/perfilFragment"
@@ -26,10 +30,32 @@
             android:id="@+id/action_perfilFragment_to_authActivity"
             app:destination="@id/authActivity" />
     </fragment>
+
     <activity
         android:id="@+id/authActivity"
         android:name="com.wolkorp.petrescue.AuthActivity"
         android:label="activity_auth"
         tools:layout="@layout/activity_auth" />
+    <fragment
+        android:id="@+id/historiasFragment"
+        android:name="com.wolkorp.petrescue.fragments.HistoriasFragment"
+        android:label="fragment_historias"
+        tools:layout="@layout/fragment_historias" >
+        <argument
+            android:name="selectedCategory"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_historiasFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.wolkorp.petrescue.fragments.PostDetailFragment"
+        android:label="fragment_post_detail"
+        tools:layout="@layout/fragment_post_detail" >
+        <argument
+            android:name="selectedPost"
+            app:argType="com.wolkorp.petrescue.models.Post" />
+    </fragment>
 
 </navigation>

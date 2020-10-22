@@ -1,16 +1,12 @@
 package com.wolkorp.petrescue
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_main.*
 
 //Tipo de login BW 18/8/2020
 enum class ProviderType{
@@ -34,12 +30,18 @@ class HomeActivity : AppCompatActivity() {
         val navController = findNavController(R.id.mainFragment)
 
         //Permite que la barra superior cambie su titulo a el del fragmento que este activo
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.buscarFragment, R.id.historiasFragment, R.id.perfilFragment))
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.buscarFragment, R.id.categoriasFragment, R.id.perfilFragment))
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         //Hace funcionar la navegacion de la barra inferior (BottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
 
+    }
+
+    // Hace funcionar el back button del ActionBar
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.mainFragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
 

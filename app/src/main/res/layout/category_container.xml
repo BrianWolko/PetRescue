@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/category_cardView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,14 +16,20 @@
         android:layout_height="match_parent">
 
 
-
         <com.flaviofaria.kenburnsview.KenBurnsView
             android:id="@+id/category_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
 
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#D6000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/category_name"
+            android:alpha="0.8"/>
+        
         
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/category_name"
@@ -30,12 +37,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@id/category_description"/>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/category_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="7dp"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/category_image"
+            tools:layout_editor_absoluteX="20dp" />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -52,8 +52,8 @@ class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.CategoryViewHo
             .load(categoria.imageURL)
             .into(holder.getImageView());
 
-
         holder.setName(categoria)
+        holder.setDescription(categoria)
 
         holder.getCardLayout().setOnClickListener {
             onItemClick(position)
@@ -65,21 +65,27 @@ class CategoriesAdapter(): RecyclerView.Adapter<CategoriesAdapter.CategoryViewHo
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val categoryCardView: CardView
         //KenBurnsView es en el fondo una ImageView pero que tiene ese efecto que mueve la imagen
         private val categoryImage: KenBurnsView
         private val categoryName: TextView
-        private val categoryCardView: CardView
+        private val categoryDescription: TextView
 
 
         init {
+            this.categoryCardView = view.findViewById(R.id.category_cardView)
             this.categoryImage = view.findViewById(R.id.category_image)
             this.categoryName = view.findViewById(R.id.category_name)
-            this.categoryCardView = view.findViewById(R.id.category_cardView)
+            this.categoryDescription = view.findViewById(R.id.category_description)
         }
 
 
         fun setName(category: Category) {
             categoryName.text = category.categoryName
+        }
+
+        fun setDescription(category: Category){
+            categoryDescription.text = category.categoryDescription
         }
 
         fun getImageView(): KenBurnsView {
