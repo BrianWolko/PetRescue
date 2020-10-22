@@ -9,18 +9,17 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.Timestamp
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
+import java.text.DateFormat
+import java.util.*
 
-class PostListAdapter(private var postList : MutableList<Post>,var context: Context): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
+class PostListAdapter(private var postList: MutableList<Post>, var context: Context, var onPostClick: (Post) -> Unit): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
 
-
-    companion object {
-        private val TAG = "PostListAdapter"
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post,parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
         return (PostHolder(view))
     }
 
@@ -28,44 +27,48 @@ class PostListAdapter(private var postList : MutableList<Post>,var context: Cont
         return postList.size
     }
 
-    fun setData(newData : ArrayList<Post>){
-        this.postList = newData
-        this.notifyDataSetChanged()
-    }
 
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
-        holder.setName(postList[position].nombre)
+        holder.setName(postList[position].nombreUsuario)
         holder.setHora(postList[position].hora)
         holder.setTexto(postList[position].texto)
 
         Glide
             .with(context)
             .load(postList[position].urlImg)
-            .into(holder.getImageView());
+            .into(holder.getImageView())
 
-
-
-
+        holder.getCardLayout().setOnClickListener {
+            onPostClick(postList[position])
+        }
     }
 
-    class PostHolder (v: View) : RecyclerView.ViewHolder (v){
+
+    class PostHolder(v: View) : RecyclerView.ViewHolder(v){
+
         private var view : View
 
         init {
             this.view = v
         }
 
-        fun setName(name:String){
-            val txt : TextView=view.findViewById(R.id.txt_item)
-            txt.text = name
+
+        fun setName(name: String){
+            val userName : TextView=view.findViewById(R.id.txt_user_name)
+            userName.text = name
         }
 
-        fun setHora(hora:String){
-            val txt: TextView= view.findViewById(R.id.txt_hora)
-            txt.text = hora
+
+        fun setHora(postTimeStamp: Timestamp) {
+            val time: TextView= view.findViewById(R.id.txt_hora)
+
+            //MOdifica el Timestamp para mostrarlo formateado en un post
+            val formattedTimeStamp = DateFormat.getDateInstance(DateFormat.MEDIUM).format(postTimeStamp.toDate())
+            time.text = formattedTimeStamp
         }
 
-        fun setTexto(txtPost:String){
+
+        fun setTexto(txtPost: String){
             val txt: TextView= view.findViewById(R.id.txt_post)
             txt.text = txtPost
         }
@@ -74,6 +77,7 @@ class PostListAdapter(private var postList : MutableList<Post>,var context: Cont
         fun getCardLayout(): CardView {
             return view.findViewById(R.id.card_package_item)
         }
+
 
         fun getImageView () : ImageView {
            return view.findViewById(R.id.img_post)

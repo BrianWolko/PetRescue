@@ -22,3 +22,7 @@ class User(userName: String?, email: String?,  uid: String?, pais : String?, pho
     }
 
 }
+/* Asi era el modelo usuario en la branch master agregar al nuevo modelo el campo userLastName y asegurarse que estan en el 
+   correcto orden en el constructor
+data class User(val uid: String, val userName: String, val userLastName: String, val email: String, val phoneNumber: String ,val profileImageUrl: String)
+*/
