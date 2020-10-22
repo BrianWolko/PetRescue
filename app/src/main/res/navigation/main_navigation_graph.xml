@@ -29,6 +29,12 @@
         <action
             android:id="@+id/action_perfilFragment_to_authActivity"
             app:destination="@id/authActivity" />
+        <action
+            android:id="@+id/action_perfilFragment_to_misPostsFragment"
+            app:destination="@id/misPostsFragment" />
+        <action
+            android:id="@+id/action_perfilFragment_to_editarPerfilFragment"
+            app:destination="@id/editarPerfilFragment" />
     </fragment>
 
     <activity
@@ -36,6 +42,23 @@
         android:name="com.wolkorp.petrescue.AuthActivity"
         android:label="activity_auth"
         tools:layout="@layout/activity_auth" />
+  
+    <fragment
+        android:id="@+id/misPostsFragment"
+        android:name="com.wolkorp.petrescue.fragments.MisPostsFragment"
+        android:label="fragment_mis_posts"
+        tools:layout="@layout/fragment_mis_posts" />
+    
+    <fragment
+        android:id="@+id/editarPerfilFragment"
+        android:name="com.wolkorp.petrescue.fragments.EditarPerfilFragment"
+        android:label="fragment_editar_perfil"
+        tools:layout="@layout/fragment_editar_perfil" >
+        <action
+            android:id="@+id/action_editarPerfilFragment_to_perfilFragment"
+            app:destination="@id/perfilFragment" />
+   </fragment>
+
     <fragment
         android:id="@+id/historiasFragment"
         android:name="com.wolkorp.petrescue.fragments.HistoriasFragment"
@@ -48,6 +71,7 @@
             android:id="@+id/action_historiasFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
     </fragment>
+  
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.wolkorp.petrescue.fragments.PostDetailFragment"

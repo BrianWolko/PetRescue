@@ -88,7 +88,7 @@ class HistoriasFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-
+  
     override fun onStart() {
         super.onStart()
         updateActionBarTitle()
@@ -160,11 +160,12 @@ class HistoriasFragment : Fragment() {
 
                 popupWindow.isFocusable = true
                 popupWindow.showAsDropDown(postsRecyclerView)
-
+            
+                // Boton para seleccionar una imagen del telefono
                 btnFoto.setOnClickListener{
                     selectImageFromGallery()
                 }
-
+              
                 // Boton para enviar el post
                 btnEnviar.setOnClickListener{
                     uploadToFirebase()
@@ -237,6 +238,15 @@ class HistoriasFragment : Fragment() {
             .getInstance()
             .collection("Posts")
             .add(post)
+      
+      
+      /*
+      Aca es donde en la branch pantalla perfil ocupaba esto como post
+      
+      val post = Post(getCurrentUser(),obtenerHora(),texto.text.toString(),"2",link,categoria.selectedItem.toString(),true)
+            db.collection("Post").add(post)
+            popupWindow.dismiss()
+       */
     }
 
 
