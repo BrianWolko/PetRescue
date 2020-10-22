@@ -1,28 +1,11 @@
 package com.wolkorp.petrescue.models
 
-
-class User(userName: String?, email: String?,  uid: String?, pais : String?, phoneNumber : String?, profileImageUrl:String?){
-    var userName: String = ""
-    var email: String = ""
-    var uid: String =""
-    var pais: String = ""
-    var phoneNumber = ""
-    var profileImageUrl = ""
+import com.google.firebase.Timestamp
+import java.util.*
 
 
-    constructor() : this("","","","","","")
+class User( val uid: String, val userName: String, val userLastName: String, val email: String, val pais : String, val phoneNumber : String, val profileImageUrl:String) {
 
-    init {
-        this.userName = userName!!
-        this.email= email!!
-        this.uid=uid!!
-        this.pais=pais!!
-        this.phoneNumber=phoneNumber!!
-        this.profileImageUrl=profileImageUrl!!
-    }
+    constructor() : this("", "","","","","", "")
 
 }
-/* Asi era el modelo usuario en la branch master agregar al nuevo modelo el campo userLastName y asegurarse que estan en el 
-   correcto orden en el constructor
-data class User(val uid: String, val userName: String, val userLastName: String, val email: String, val phoneNumber: String ,val profileImageUrl: String)
-*/

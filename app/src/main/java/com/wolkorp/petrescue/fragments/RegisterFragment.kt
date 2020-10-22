@@ -90,7 +90,7 @@ class RegisterFragment : Fragment() {
         //Ocupa el mismo uid de FirebaseAuth como id del documento de firestore
         val uid = FirebaseAuth.getInstance().uid ?: "No id"
         //Al momento de registrarse el numero de telefono y el url de la imagen van vacios
-        val user = User(uid, userName, userLastName, email, "", "")
+        val user = User(uid, userName, userLastName, email, "", "", "")
 
         FirebaseFirestore
             .getInstance()
@@ -98,6 +98,7 @@ class RegisterFragment : Fragment() {
             .document(uid)
             .set(user)
             .addOnSuccessListener { documentReference ->
+
                 Toast.makeText(context, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
                 navigateToMainActivity()
 

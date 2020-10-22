@@ -8,7 +8,7 @@
     tools:context=".fragments.MisPostsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rec_mis_posts"
+        android:id="@+id/recyclerView_mis_posts"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

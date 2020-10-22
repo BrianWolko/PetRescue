@@ -21,7 +21,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.wolkorp.petrescue.R
-import com.wolkorp.petrescue.adapters.CategoriesAdapter
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
 import java.util.*
@@ -70,14 +69,17 @@ class HistoriasFragment : Fragment() {
         postsRecyclerView.setHasFixedSize(true)
 
 
+        // inicializar popUpView con sus vistast corresondientes
         val popupView = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
         popupWindow = PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-
         btnSalir = popupView.findViewById(R.id.btnSalir)
         btnEnviar = popupView.findViewById(R.id.btnEnviar)
         btnFoto = popupView.findViewById(R.id.btnFoto)
         textoPost = popupView.findViewById(R.id.txtTexto)
         categoria = popupView.findViewById(R.id.spinnerCategorias)
+
+        // Argumento tipo string cargado en CategoriasFragment con el nombre de la categoria
+        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
 
         return fragmentView
     }
@@ -92,35 +94,33 @@ class HistoriasFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         updateActionBarTitle()
-        getPostsFromFirebase()
+        getPostsFromCategory(selectedCategory)
     }
 
 
     private fun updateActionBarTitle() {
-        // Argumento tipo string cargado en CategoriasFragment con el nombre de la categoria
-        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
-
         // Barra superior de la activity que aparece encima del fragment
         val actionBar: ActionBar? = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title =  selectedCategory
     }
 
 
-    private fun getPostsFromFirebase() {
-        // Devuelve los post en firebase que coincidan con la categoria que se seleccionó, ordenados por hora
+    // Devuelve los post en firebase que coincidan con la categoria que se pasa, ordenados por hora
+    private fun getPostsFromCategory(category: String) {
         val query = FirebaseFirestore
                             .getInstance()
                             .collection("Posts")
-                            .whereEqualTo("categoria", selectedCategory)
+                            .whereEqualTo("categoria", category)
                             .orderBy("hora", Query.Direction.DESCENDING)
 
-        //El registration listener lo guardo porque se necesita para desactivar el listener cuando el fragment no esta activo
+        // El registration es un listener que solo se asigna para despues poder descativarlo este listener
+        // cuando el fragment no esta activo, sino gasta recursos
         registrationListener = query.addSnapshotListener { snapshot, error ->
 
             if (error != null) {
                 //todo Falta mejorar codigo para manejar errores caso de que exista uno
-                Toast.makeText(context, "Error getting posts", Toast.LENGTH_SHORT).show()
-                Log.d("HistoriasFragment", "ESTE ES EL ERROR DE FIREBASE $error")
+                Toast.makeText(context, "No se pudieron obtener las historias.\nIntente de nuevo", Toast.LENGTH_SHORT).show()
+                Log.d("HistoriasFragment", "Error getting posts: $error")
                 return@addSnapshotListener
             }
 
@@ -143,9 +143,7 @@ class HistoriasFragment : Fragment() {
 
     //Funcion que se llama cuando el usuario toca un post
     private fun onPostClick(selectedPost: Post) {
-
-
-        //Guarda el post en las clases autogeneradas del navgraph para pasar a otro fragment
+        //Guarda el post en las clases autogeneradas del navgraph que permiten pasar argumentos entre fragments
         val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(selectedPost)
         fragmentView.findNavController().navigate(action)
     }
@@ -182,6 +180,7 @@ class HistoriasFragment : Fragment() {
     }
 
 
+
     private fun selectImageFromGallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
@@ -209,24 +208,22 @@ class HistoriasFragment : Fragment() {
         // Si se selecciono una imagen entra a este if
         if(selectedPhotoUri != null) {
             // Esta linea sube solo la imagen a Firebase Storage
-            refStorage.putFile(selectedPhotoUri!!)
-                .addOnSuccessListener {
-                    // Link con la localizacion de la foto en Firebase Storage
-                    refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
-                        // Solo una vez subida la imagen con exito aStorage se sube el post a Firestore
-                        uploadPostFirebase(firestoreUrl.toString())
-                    }
+            refStorage.putFile(selectedPhotoUri!!).addOnSuccessListener {
+                // Link con la localizacion de la foto en Firebase Storage
+                refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
+                    // Solo una vez subida la imagen con exito a Storage se sube el post a Firestore
+                    uploadPostToFirebase(firestoreUrl.toString())
                 }
+            }
 
         // No se elegio una foto, subir post sin url de foto
         } else {
-            uploadPostFirebase("post sin foto")
+            uploadPostToFirebase("post sin foto")
         }
-
     }
 
 
-    private fun uploadPostFirebase(imageUrl: String) {
+    private fun uploadPostToFirebase(imageUrl: String) {
         val fullName = getCurrentUserName()
         val horaPost =  Timestamp(Date())
         val textoPost = textoPost.text.toString()
@@ -238,23 +235,12 @@ class HistoriasFragment : Fragment() {
             .getInstance()
             .collection("Posts")
             .add(post)
-      
-      
-      /*
-      Aca es donde en la branch pantalla perfil ocupaba esto como post
-      
-      val post = Post(getCurrentUser(),obtenerHora(),texto.text.toString(),"2",link,categoria.selectedItem.toString(),true)
-            db.collection("Post").add(post)
-            popupWindow.dismiss()
-       */
+
     }
 
 
     private fun getCurrentUserName() : String {
-        val prefs = requireContext().getSharedPreferences(
-            getString(R.string.prefs_file),
-            Context.MODE_PRIVATE
-        )
+        val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
         val userName = prefs.getString("userName", null)
         val userLastName = prefs.getString("userLastName", null)
 
