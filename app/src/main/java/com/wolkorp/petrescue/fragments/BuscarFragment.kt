@@ -25,6 +25,11 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.ramotion.cardslider.CardSliderLayoutManager
 import com.ramotion.cardslider.CardSnapHelper
+import com.sucho.placepicker.AddressData
+import com.sucho.placepicker.Constants
+import com.sucho.placepicker.Constants.GOOGLE_API_KEY
+import com.sucho.placepicker.MapType
+import com.sucho.placepicker.PlacePicker
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PetsAdapter
 import com.wolkorp.petrescue.models.Pet
@@ -46,7 +51,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     private lateinit var mapa: GoogleMap
 
 
-    // Atributos posibles para un fragment separado que se encargue de mostrar o controlar  BottomSheet
+    // Atributos que son posibles atributos para un fragment separado que se encargue de mostrar y controlar  BottomSheet
     private var selectedPhotoUri: Uri? = null
     private val PICK_IMAGE_CODE = 1000
     private val PLACE_PICKER_CODE = 1
@@ -56,6 +61,8 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     private  var day = 0
     private  var hour = 0
     private  var minute = 0
+    private var selectedLatitude = 0.0
+    private var selectedLongitude = 0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,40 +109,9 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-    /*
-    private fun createAndAddPets() {
-
-        //Por ahora para probar que funciona dejo esta parte hardcodeada
-        val pet1 = Pet("Mascota 1", -34.6129, -58.4329, "Mar 28", "8:00", "https://thegoldenscope.files.wordpress.com/2014/05/cani-randagi-1-spiegel-de.jpg")
-        val pet2 = Pet("Mascota 2", -34.5948, -58.4354, "Mar 30", "18:00","https://i.redd.it/c8z2xyougzj31.jpg")
-        val pet3 = Pet("Mascota 3", -34.5924, -58.4650, "Abr 2", "16:00","https://images.newindianexpress.com/uploads/user/imagelibrary/2020/4/6/w1200X800/doggo.JPG")
-        val pet4 = Pet("Mascota 4", -34.5628, -58.4984, "May 1", "7:00","https://cdnuploads.aa.com.tr/uploads/Contents/2020/04/05/thumbs_b_c_af7544b5879e3faa0eb3ebcaa6a44f20.jpg?v=21143")
-        val pet5 = Pet("Mascota 5", -34.5715, -58.4205, "May 22", "12:00","https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Stray_dogs_crosswalk.jpg/1024px-Stray_dogs_crosswalk.jpg")
-        val pet6 = Pet("Mascota 6", -34.6251, -58.3973, "Jun 4", "8:00","https://yabangee.com/wp-content/uploads/Cat5.jpg")
-        val pet7 = Pet("Mascota 7", -34.6092, -58.3891, "Jun 18", "8:40","https://steemitimages.com/DQmdRLBWGw6iVt5MEkNjeLwHHbVFnShNXXmYbShcyryXyt4/DSC_01612.jpg")
-        val pet8 = Pet("Mascota 8", -34.5952, -58.3800, "Jul 25", "13:00","https://i.insider.com/5cd2f20c93a15226895f5ef2?width=1100&format=jpeg&auto=webp")
-        val pet9 = Pet("Mascota 9", -34.6297, -58.3706, "Aug 7", "20:00","https://i.redd.it/rrcw06uuijh21.jpg")
-        val pet10 = Pet("Mascota 10", -34.6595, -58.4896, "Aug 9", "16:00","https://img-aws.ehowcdn.com/750x428p/s3.amazonaws.com/cuteness_data/s3fs-public/diy_blog/Facts-About-Street-Dogs-in-Mexico.jpg")
-        val pet11 = Pet("Mascota 11", -34.5200, -58.4815, "Sep 1", "22:30","https://aristotleguide.files.wordpress.com/2015/09/man-petting-strays-syntagma-athens.jpg")
-        val pet12 = Pet("Mascota 12", -34.6157, -58.4178, "Sep 5", "7:30","https://myanimals.com/wp-content/uploads/2018/03/dog-in-street-461x306.jpg")
-
-
-        petsList.add(pet1)
-        petsList.add(pet2)
-        petsList.add(pet3)
-        petsList.add(pet4)
-        petsList.add(pet5)
-        petsList.add(pet6)
-        petsList.add(pet7)
-        petsList.add(pet8)
-        petsList.add(pet9)
-        petsList.add(pet10)
-        petsList.add(pet11)
-        petsList.add(pet12)
-    }*/
 
     // todo: este despues tengo que borrarlo por ahora es para probar si el nuevo modelo de pet causa problemas con firebase
-    // todo: tiene el miso nombre que la funcion commentada de arriba
+    // todo: en la branch dodnde esta esta parte bien implementada aparecera el mismo codigo solo que con otro nombre. Borrar este
     private fun createAndAddPets() {
         val query =  FirebaseFirestore
             .getInstance()
@@ -335,11 +311,25 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        // Resultado de seleccionar una foto del telefono
         if (requestCode == PICK_IMAGE_CODE && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             // Get the Uri of data
             selectedPhotoUri = data.data
         }
 
+
+        // resultado de seleccionar una localizacion
+        if (requestCode == Constants.PLACE_PICKER_REQUEST && resultCode == Activity.RESULT_OK) {
+            val addressData = data?.getParcelableExtra<AddressData>(Constants.ADDRESS_INTENT)
+
+            if ( addressData?.latitude != null && addressData?.longitude != null) {
+                this.selectedLatitude = addressData!!.latitude
+                this.selectedLongitude = addressData!!.longitude
+            } else {
+                Toast.makeText(context, "Error obteniendo localizacion\n Latitud o Longitud es null", Toast.LENGTH_LONG).show()
+            }
+
+        }
 
 
     }
@@ -380,13 +370,25 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
 
     private fun selectLocation() {
-        /*
-        val gmmIntentUri = Uri.parse("geo:37.7749,-122.4194")
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        mapIntent.setPackage("com.google.android.apps.maps")
-            startActivity(mapIntent)
-
-         */
+        val intent = PlacePicker.IntentBuilder()
+            .setLatLong(-34.6099, -58.4290)  // Initial Latitude and Longitude the Map will load into
+            .showLatLong(true)  // Show Coordinates in the Activity
+            .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
+            .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
+            //.setMarkerDrawable(R.drawable.marker) // Change the default Marker Image
+            .setMarkerImageImageColor(R.color.colorPrimary)
+           // .setFabColor(R.color.fabColor)
+            //.setPrimaryTextColor(R.color.primaryTextColor) // Change text color of Shortened Address
+            //.setSecondaryTextColor(R.color.secondaryTextColor) // Change text color of full Address
+            //.setBottomViewColor(R.color.bottomViewColor) // Change Address View Background Color (Default: White)
+            //.setMapRawResourceStyle(R.raw.map_style)  //Set Map Style (https://mapstyle.withgoogle.com/)
+            .setMapType(MapType.NORMAL)
+            .setPlaceSearchBar(true, "AIzaSyBSirIeZ2xmrNez6vuOvo2yO3aZlPnv8gA") //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
+            .onlyCoordinates(true)  //Get only Coordinates from Place Picker
+            .hideLocationButton(true)   //Hide Location Button (Default: false)
+            .disableMarkerAnimation(true)   //Disable Marker Animation (Default: false)
+            .build(requireActivity())
+        startActivityForResult(intent, Constants.PLACE_PICKER_REQUEST)
     }
 
 
@@ -418,9 +420,8 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         // todo: Averiguar como obtener fecha, hora, latitud, longitud, de una foto
 
         val descripcion = petDescriptionEditText.text.toString()
-        // todo: por ahora inicializo la lat y long en 0.0
-        val latitud = 0.0
-        val longitud = 0.0
+        val latitud = this.selectedLatitude
+        val longitud = this.selectedLongitude
         val fecha =  Timestamp(getDateFromSelectedTime())
 
 
