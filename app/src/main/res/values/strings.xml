@@ -7,9 +7,12 @@
     <string name="title_activity_maps">Map</string>
 
     <string-array name="categorias">
-        <item>Buscar familia</item>
-        <item>Buscar chofer</item>
-        <item>Buscar asesoria</item>
+        <item>Buscar Familia</item>
+        <item>Buscar Chofer</item>
+        <item>Asesoria</item>
     </string-array>
+
+    <string name="contacto"><s>Contacto</s></string>
+
 
 </resources>

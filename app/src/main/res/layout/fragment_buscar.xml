@@ -22,7 +22,7 @@
             android:layout_height="210dp"
             app:layout_constraintBottom_toTopOf="@id/description_text_switcher"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             />
 
         <FrameLayout

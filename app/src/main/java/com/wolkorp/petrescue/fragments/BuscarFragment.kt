@@ -30,6 +30,7 @@ import com.sucho.placepicker.Constants
 import com.sucho.placepicker.Constants.GOOGLE_API_KEY
 import com.sucho.placepicker.MapType
 import com.sucho.placepicker.PlacePicker
+import com.google.firebase.firestore.ListenerRegistration
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PetsAdapter
 import com.wolkorp.petrescue.models.Pet
@@ -45,6 +46,9 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     private lateinit var fragmentView: View
     private var petsList: ArrayList<Pet> = ArrayList()
     private lateinit var reciclerView: RecyclerView
+  
+    //Listener que escucha cambio en la base de datos
+    private lateinit var registrationListener: ListenerRegistration
 
     private lateinit var locationTextSwitcher: TextSwitcher
     private lateinit var petDescriptionTextSwitcher: TextSwitcher
@@ -100,25 +104,22 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-
+  
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        createAndAddPets()
+        getPetsFromFirebase()
         setUpReciclerView()
         setUpTextSwitcher()
     }
 
-
-
-    // todo: este despues tengo que borrarlo por ahora es para probar si el nuevo modelo de pet causa problemas con firebase
-    // todo: en la branch dodnde esta esta parte bien implementada aparecera el mismo codigo solo que con otro nombre. Borrar este
-    private fun createAndAddPets() {
+    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
+    private fun getPetsFromFirebase() {
         val query =  FirebaseFirestore
-            .getInstance()
-            .collection("Pets")
-            .orderBy("fecha", Query.Direction.DESCENDING)
+                             .getInstance()
+                             .collection("Pets")
+                             .orderBy("fecha", Query.Direction.DESCENDING)
 
-        query.addSnapshotListener { snapshot, error  ->
+        registrationListener = query.addSnapshotListener { snapshot, error  ->
             if (error != null) {
                 //todo handle error
                 Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
@@ -130,14 +131,19 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
                 petsList.add(pet.toObject())
             }
 
-            // todo: aca es donde actualizo el adapter se repite linea de codifo que en funcion setUpREcyclerView()
-            reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
-
+            //Es importante que este metodo se llame despues de haber llenado la lista
+            //con los posts, sino no se muestra nada en el recyclerView
+            updatePetsList()
         }
     }
 
 
-    private fun setUpReciclerView() {
+    private fun updatePetsList() {
+        recyclerView.adapter = PetsAdapter(petsList, requireContext())
+    }
+  
+  
+      private fun setUpReciclerView() {
         reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(
             selectedPet
         ) }
@@ -145,7 +151,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         CardSnapHelper().attachToRecyclerView(reciclerView);
 
         //Se activa cuando se desliza  el RecyclerView
-        reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //El RecyclerView paro de moverse
@@ -185,16 +191,15 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        if(googleMap != null) {
+           //todo que pasa si google map es null
             mapa = googleMap
             // Agrega marcador en centro de Buenos Aires y mueve la camara
             val buenosAires = LatLng(-34.6099, -58.4290)
             mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
             mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
-        }
     }
-
-
+  
+  
     //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
     //el reciclerView deja de moverse
     private fun reciclerViewStoppedScrolling() {
@@ -416,7 +421,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
 
     private fun uploadPetToFirebase(imageUrl: String) {
-
         // todo: Averiguar como obtener fecha, hora, latitud, longitud, de una foto
 
         val descripcion = petDescriptionEditText.text.toString()
@@ -455,6 +459,12 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         //Guarda al Pet que se tocó  en las clases autogeneradas del navgraph para pasar a otro fragment
         val action = BuscarFragmentDirections.actionBuscarFragmentToPetDetailFragment(selectedPet)
         fragmentView.findNavController().navigate(action)
+    }
+  
+  
+    override fun onStop() {
+        super.onStop()
+        registrationListener.remove()
     }
 
 
