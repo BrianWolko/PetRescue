@@ -66,7 +66,6 @@ class PerfilFragment : Fragment() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
         if(currentUserId != null) {
-
             val query =  FirebaseFirestore
                                             .getInstance()
                                             .collection("Users")
@@ -77,12 +76,11 @@ class PerfilFragment : Fragment() {
                 if (document != null) {
 
                     val user: User = document.toObject()!!
-                    updateImage(user.profileImageUrl)
                     nombre.text =user.userName
                     pais.text = user.pais
                     email.text = user.email
                     numero.text = user.phoneNumber
-
+                    updateImage(user.profileImageUrl)
                     Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
 
                 } else {

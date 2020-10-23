@@ -13,10 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +20,6 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
@@ -78,9 +73,9 @@ class HistoriasFragment : Fragment() {
         val popupView = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
         popupWindow = PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
         btnSalir = popupView.findViewById(R.id.btnSalir)
-        btnEnviar = popupView.findViewById(R.id.btnEnviar)
+        btnEnviar = popupView.findViewById(R.id.btn_confirmar_cambios)
         btnFoto = popupView.findViewById(R.id.btnFoto)
-        textoPost = popupView.findViewById(R.id.txtTexto)
+        textoPost = popupView.findViewById(R.id.texto_descripcion_mascota)
         categoria = popupView.findViewById(R.id.spinnerCategorias)
 
         // Argumento tipo string cargado en CategoriasFragment con el nombre de la categoria
@@ -183,7 +178,6 @@ class HistoriasFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 
     private fun selectImageFromGallery() {

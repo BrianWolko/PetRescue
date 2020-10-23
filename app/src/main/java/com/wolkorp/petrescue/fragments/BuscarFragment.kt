@@ -104,7 +104,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-  
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getPetsFromFirebase()
@@ -139,11 +139,11 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
 
     private fun updatePetsList() {
-        recyclerView.adapter = PetsAdapter(petsList, requireContext())
+        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
     }
   
   
-      private fun setUpReciclerView() {
+    private fun setUpReciclerView() {
         reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(
             selectedPet
         ) }
@@ -151,7 +151,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         CardSnapHelper().attachToRecyclerView(reciclerView);
 
         //Se activa cuando se desliza  el RecyclerView
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     //El RecyclerView paro de moverse

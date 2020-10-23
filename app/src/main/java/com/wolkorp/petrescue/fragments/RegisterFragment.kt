@@ -2,6 +2,7 @@ package com.wolkorp.petrescue.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -97,15 +98,16 @@ class RegisterFragment : Fragment() {
             .collection("Users")
             .document(uid)
             .set(user)
-            .addOnSuccessListener { documentReference ->
+            .addOnSuccessListener {
 
                 Toast.makeText(context, "Usuario creado exitosamente", Toast.LENGTH_SHORT).show()
                 navigateToMainActivity()
-
             }
-            .addOnFailureListener { e ->
+            .addOnFailureListener { error ->
+
                 //todo podria mejorarse el manejo de errores
                 Toast.makeText(context, "No se pudo crear tu cuenta. \nIntenta de nuevo", Toast.LENGTH_SHORT).show()
+                Log.d("RegisterFragment", "Error creando usuario $error")
             }
     }
 

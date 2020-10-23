@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/com_facebook_button_login_silver_background" />
 
     <Button
-        android:id="@+id/btnEnviar"
+        android:id="@+id/btn_confirmar_cambios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Subir post"
