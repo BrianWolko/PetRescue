@@ -9,7 +9,11 @@
         android:id="@+id/buscarFragment"
         android:name="com.wolkorp.petrescue.fragments.BuscarFragment"
         android:label="Buscar"
-        tools:layout="@layout/fragment_buscar" />
+        tools:layout="@layout/fragment_buscar" >
+        <action
+            android:id="@+id/action_buscarFragment_to_petDetailFragment"
+            app:destination="@id/petDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/categoriasFragment"
@@ -42,6 +46,16 @@
         android:name="com.wolkorp.petrescue.AuthActivity"
         android:label="activity_auth"
         tools:layout="@layout/activity_auth" />
+
+    <fragment
+        android:id="@+id/petDetailFragment"
+        android:name="com.wolkorp.petrescue.fragments.PetDetailFragment"
+        android:label="fragment_pet_detail"
+        tools:layout="@layout/fragment_pet_detail" >
+        <argument
+            android:name="selectedPet"
+            app:argType="com.wolkorp.petrescue.models.Pet" />
+    </fragment>
   
     <fragment
         android:id="@+id/misPostsFragment"
