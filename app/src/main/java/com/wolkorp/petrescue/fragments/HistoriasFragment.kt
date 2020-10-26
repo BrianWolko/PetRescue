@@ -1,6 +1,7 @@
 package com.wolkorp.petrescue.fragments
 
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -223,18 +225,20 @@ class HistoriasFragment : Fragment() {
 
 
     private fun uploadPostToFirebase(imageUrl: String) {
+
         val fullName = getCurrentUserName()
         val horaPost =  Timestamp(Date())
         val textoPost = textoPost.text.toString()
         val categoriaSeleccionada = categoria.selectedItem.toString()
         val idUsuario = FirebaseAuth.getInstance().uid ?: "No id"
 
-        val post = Post(fullName, horaPost, textoPost, imageUrl, categoriaSeleccionada, idUsuario, false)
-        FirebaseFirestore
-            .getInstance()
-            .collection("Posts")
-            .add(post)
 
+        val id = FirebaseFirestore.getInstance().collection("Posts").document().getId()
+
+        val post = Post(id,fullName, horaPost, textoPost, imageUrl, categoriaSeleccionada, idUsuario, true)
+
+        FirebaseFirestore.getInstance().collection("Posts").document(id).set(post)
+        Log.d(TAG, "uploadPostToFirebase: $id")
     }
 
 

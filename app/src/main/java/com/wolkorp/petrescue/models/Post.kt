@@ -28,12 +28,13 @@ class Post(nombre: String?, hora: String?, texto: String?, id: String?, urlImg :
         this.activo=activo!!
 */
 
-class Post(val nombreUsuario: String, val hora: Timestamp, val texto: String, val urlImg : String, val categoria : String, val idUsuario: String, val activo: Boolean): Parcelable {
+class Post(val id : String ,val nombreUsuario: String, val hora: Timestamp, val texto: String, val urlImg : String, val categoria : String, val idUsuario: String, val activo: Boolean): Parcelable {
 
-    constructor() : this("", Timestamp(Date()),"","","","", false)
+    constructor() : this("","", Timestamp(Date()),"","","","", true)
 
 
     constructor(parcel: Parcel) : this(
+        parcel.readString()!!,
         parcel.readString()!!,
         parcel.readParcelable(Timestamp::class.java.classLoader)!!,
         parcel.readString()!!,
@@ -45,6 +46,7 @@ class Post(val nombreUsuario: String, val hora: Timestamp, val texto: String, va
 
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(nombreUsuario)
         parcel.writeParcelable(hora, flags)
         parcel.writeString(texto)

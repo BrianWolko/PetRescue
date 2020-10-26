@@ -38,7 +38,6 @@ class MisPostsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        //posts.add(Post("Tomas Brito","15-10-2020 00:27:44","texto test texto test","2","https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/ImgsPost%2F042b3a0b-151e-442d-9de0-40960bf60f58.jpg?alt=media&token=61d1b7b3-6e88-42ce-82e5-245c48eb9d4d","a",true))
         configureRecyclerView()
         updateActionBarTitle()
         getPostsFromFirebase()
@@ -63,6 +62,7 @@ class MisPostsFragment : Fragment() {
     private fun  getPostsFromFirebase() {
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+
         val query = FirebaseFirestore
                             .getInstance()
                             .collection("Posts")
@@ -70,14 +70,17 @@ class MisPostsFragment : Fragment() {
                             .whereEqualTo("activo",true)
 
         query.addSnapshotListener { snapshot, error ->
+
             if (error != null) {
                 Log.d(TAG, "Listen failed.", error)
                 return@addSnapshotListener
             }
             posts.clear()
             if (snapshot != null ) {
+
                 for (post in snapshot) {
                     posts.add(post.toObject())
+
                 }
                 // Se tiene que llamar despues de que la lista post obtenga todos los post de firebase, sino rompe
                 updateRecyclerView()

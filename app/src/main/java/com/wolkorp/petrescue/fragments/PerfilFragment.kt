@@ -71,8 +71,8 @@ class PerfilFragment : Fragment() {
                                             .collection("Users")
                                             .document(currentUserId)
 
-            query.get().addOnSuccessListener { document ->
-
+            //query.get().addOnSuccessListener { document ->
+                query.addSnapshotListener{ document,e ->
                 if (document != null) {
 
                     val user: User = document.toObject()!!
@@ -87,9 +87,7 @@ class PerfilFragment : Fragment() {
                     Toast.makeText(context, "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.d("PerfilFragment", "method loadUserData() failed.", exception)
-            }
+
 
         }
     }

@@ -40,20 +40,20 @@ class MiPostsAdapter(private var postList : MutableList<Post>,var context: Conte
 
 
         holder.getButtonDelete().setOnClickListener{
-            changePostActiveState(postList[position].idUsuario)
+            changePostActiveState(postList[position].id)
         }
 
     }
 
 
-    private fun changePostActiveState(idUsuario: String) {
+    private fun changePostActiveState(id: String) {
         // todo: pasar esta funcion al MisPostsFragment
         // todo: no esta funcionando porque el id que se pasa es el del usuario, no el id del post. Agregar al modelo post un campo idPost?
-        Log.d("PostListAdapter", "id = "+ idUsuario)
+        Log.d("PostListAdapter", "id = "+ id)
         val ref = FirebaseFirestore
                                         .getInstance()
                                         .collection("Posts")
-                                        .document(idUsuario)
+                                        .document(id)
         ref.update("activo",false)
     }
 

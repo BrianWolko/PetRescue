@@ -30,7 +30,7 @@
             android:layout_marginStart="8dp"
             android:text="Nombre Usuario"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/img_profile_post"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -47,7 +47,7 @@
             android:layout_marginStart="8dp"
             android:text="Hace 1 hora"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/img_profile_post"
             app:layout_constraintTop_toBottomOf="@+id/txt_user_name" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -74,7 +74,7 @@
             app:layout_constraintBottom_toTopOf="@+id/img_post"/>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/img_profile_post"
             android:layout_width="39dp"
             android:layout_height="38dp"
             android:layout_marginStart="16dp"
