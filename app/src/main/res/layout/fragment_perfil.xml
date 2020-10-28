@@ -39,8 +39,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profile_picture"
-        android:layout_width="66dp"
-        android:layout_height="67dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:elevation="8dp"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
@@ -60,7 +60,7 @@
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="24dp"
-        android:layout_height="22dp"
+        android:layout_height="24dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/profile"
         app:layout_constraintEnd_toStartOf="@+id/nombre"
@@ -70,8 +70,8 @@
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="23dp"
-        android:layout_height="25dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginBottom="4dp"
         android:src="@drawable/ic_baseline_location"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="pais"
+        android:text="Localización"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
@@ -106,18 +106,6 @@
         app:layout_constraintStart_toEndOf="@+id/profile_picture" />
 
 
-    <Button
-        android:id="@+id/btn_editar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
-        android:background="#00D15656"
-        android:text="Editar"
-        android:textColor="#1389C8"
-        app:layout_constraintBottom_toTopOf="@+id/guideline5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline6"
-        app:layout_constraintVertical_bias="0.21" />
 
 
     <Button

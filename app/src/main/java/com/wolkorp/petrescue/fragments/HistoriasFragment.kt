@@ -14,9 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -25,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
+import kotlinx.android.synthetic.main.bottom_sheet_add_post.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -35,12 +37,10 @@ class HistoriasFragment : Fragment() {
 
     private lateinit var fragmentView: View
     private lateinit var postsRecyclerView: RecyclerView
-    //Una lista simple con los objetos que va a mostrar postsRecyclerView
+    // Lista con los objetos que va a mostrar postsRecyclerView
     private var postsList: ArrayList<Post> = ArrayList()
 
-    private lateinit var popupWindow: PopupWindow
     private lateinit var textoPost: TextView
-    private lateinit var btnSalir: Button
     private lateinit var btnEnviar: Button
     private lateinit var btnFoto: Button
     private lateinit var categoria : Spinner
@@ -70,17 +70,7 @@ class HistoriasFragment : Fragment() {
         postsRecyclerView = fragmentView.findViewById(R.id.rec_posts)
         postsRecyclerView.setHasFixedSize(true)
 
-
-        // inicializar popUpView con sus vistast corresondientes
-        val popupView = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
-        popupWindow = PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-        btnSalir = popupView.findViewById(R.id.btnSalir)
-        btnEnviar = popupView.findViewById(R.id.btn_confirmar_cambios)
-        btnFoto = popupView.findViewById(R.id.btnFoto)
-        textoPost = popupView.findViewById(R.id.texto_descripcion_mascota)
-        categoria = popupView.findViewById(R.id.spinnerCategorias)
-
-        // Argumento tipo string cargado en CategoriasFragment con el nombre de la categoria
+        // Argumento cargado en CategoriasFragment con el nombre de la categoria
         selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
 
         return fragmentView
@@ -143,7 +133,7 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    //Funcion que se llama cuando el usuario toca un post
+    //Se llama cuando el usuario toca un post
     private fun onPostClick(selectedPost: Post) {
         //Guarda el post en las clases autogeneradas del navgraph que permiten pasar argumentos entre fragments
         val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(selectedPost)
@@ -154,32 +144,48 @@ class HistoriasFragment : Fragment() {
     // Se llama cuando se toca el botton de la barra superior
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-
-            // Boton para abrir el popup
-            R.id.menu_add_post -> {
-
-                popupWindow.isFocusable = true
-                popupWindow.showAsDropDown(postsRecyclerView)
-            
-                // Boton para seleccionar una imagen del telefono
-                btnFoto.setOnClickListener{
-                    selectImageFromGallery()
-                }
-              
-                // Boton para enviar el post
-                btnEnviar.setOnClickListener{
-                    uploadToFirebase()
-                    popupWindow.dismiss()
-                }
-
-                // Boton para salir del popup
-                btnSalir.setOnClickListener{
-                    popupWindow.dismiss()
-                }
+            // Boton para mostrar el BottomSheet
+            R.id.menu_edit_perfil -> {
+                showBottomSheetView()
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    private fun showBottomSheetView() {
+        // Cargar y mostrar el BottomSheet
+        var addPetBottomSheet = LayoutInflater
+                                        .from(requireContext().applicationContext)
+                                        .inflate(R.layout.bottom_sheet_add_post, fragmentView.findViewById(R.id.bottomSheetContainer))
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetTheme)
+        // Permite que se muestre completo el BottomsSheetDialog sino no se muestra por completo
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        // Cargar atributos del bottomSheet
+        textoPost = addPetBottomSheet.findViewById(R.id.texto_post)
+        btnFoto = addPetBottomSheet.findViewById(R.id.btnFoto)
+        categoria = addPetBottomSheet.findViewById(R.id.spinnerCategorias)
+        btnEnviar = addPetBottomSheet.findViewById(R.id.btn_subir_post)
+
+
+        // Boton para seleccionar una imagen del telefono
+        btnFoto.setOnClickListener{
+            selectImageFromGallery()
+        }
+
+        // Boton para enviar el post
+        btnEnviar.setOnClickListener{
+            uploadPostToFirebase()
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setContentView(addPetBottomSheet)
+        bottomSheetDialog.show()
+    }
+
+
 
 
     private fun selectImageFromGallery() {
@@ -199,7 +205,7 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    private fun uploadToFirebase() {
+    private fun uploadPostToFirebase() {
         val fileName = UUID.randomUUID().toString()
         val refStorage = FirebaseStorage
                                            .getInstance()
@@ -234,11 +240,13 @@ class HistoriasFragment : Fragment() {
 
 
         val id = FirebaseFirestore.getInstance().collection("Posts").document().getId()
-
         val post = Post(id,fullName, horaPost, textoPost, imageUrl, categoriaSeleccionada, idUsuario, true)
 
         FirebaseFirestore.getInstance().collection("Posts").document(id).set(post)
+
         Log.d(TAG, "uploadPostToFirebase: $id")
+        //Reseteo el uri de la foto seleccionada
+        selectedPhotoUri = null
     }
 
 

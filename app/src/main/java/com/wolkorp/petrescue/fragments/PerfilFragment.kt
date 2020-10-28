@@ -2,11 +2,8 @@ package com.wolkorp.petrescue.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -32,6 +29,13 @@ class PerfilFragment : Fragment() {
     lateinit var profileImage : ImageView
 
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false)
@@ -45,16 +49,18 @@ class PerfilFragment : Fragment() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.perfil_fragment_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
     override fun onStart() {
         super.onStart()
         loadUserData()
 
         btn_ver_posts_activos.setOnClickListener {
             it.findNavController().navigate(R.id.action_perfilFragment_to_misPostsFragment)
-        }
-
-        btn_editar.setOnClickListener {
-            it.findNavController().navigate(R.id.action_perfilFragment_to_editarPerfilFragment)
         }
 
         logOutButton.setOnClickListener {
@@ -71,12 +77,12 @@ class PerfilFragment : Fragment() {
                                             .collection("Users")
                                             .document(currentUserId)
 
-            //query.get().addOnSuccessListener { document ->
-                query.addSnapshotListener{ document,e ->
+
+                query.addSnapshotListener{ document, e ->
                 if (document != null) {
 
                     val user: User = document.toObject()!!
-                    nombre.text =user.userName
+                    nombre.text ="${user.userName} ${user.userLastName}"
                     pais.text = user.pais
                     email.text = user.email
                     numero.text = user.phoneNumber
@@ -100,6 +106,18 @@ class PerfilFragment : Fragment() {
             .into(profileImage)
     }
 
+
+
+    // Se llama cuando se toca el botton de la barra superior
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+
+            R.id.menu_edit_perfil -> {
+                fragmentView.findNavController().navigate(R.id.action_perfilFragment_to_editarPerfilFragment)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     // Limpia las shared preferences, sale de la cuenta
     private fun logOut() {

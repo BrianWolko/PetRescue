@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.MiPostsAdapter
@@ -25,6 +26,14 @@ class MisPostsFragment : Fragment() {
     private lateinit var fragmentView: View
     private lateinit var myPostsRecyclerView: RecyclerView
     var posts = ArrayList<Post>()
+    private lateinit var registrationListener: ListenerRegistration
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        updateActionBarTitle()
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,11 +45,9 @@ class MisPostsFragment : Fragment() {
     }
 
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         configureRecyclerView()
-        updateActionBarTitle()
-        getPostsFromFirebase()
     }
 
 
@@ -58,6 +65,12 @@ class MisPostsFragment : Fragment() {
     }
 
 
+    override fun onStart() {
+        super.onStart()
+        getPostsFromFirebase()
+    }
+
+
     //Devuelve todos los post en firebase y los agrega a la lista que despues se muestra
     private fun  getPostsFromFirebase() {
 
@@ -69,7 +82,7 @@ class MisPostsFragment : Fragment() {
                             .whereEqualTo("idUsuario",userId)
                             .whereEqualTo("activo",true)
 
-        query.addSnapshotListener { snapshot, error ->
+        registrationListener = query.addSnapshotListener { snapshot, error ->
 
             if (error != null) {
                 Log.d(TAG, "Listen failed.", error)
@@ -104,4 +117,12 @@ class MisPostsFragment : Fragment() {
         Snackbar.make(fragmentView, position.toString(), Snackbar.LENGTH_SHORT).show()
         // todo: mostrar comentarios del post cuando se toque uno
     }
+
+
+    override fun onStop() {
+        super.onStop()
+        registrationListener.remove()
+    }
+
+
 }

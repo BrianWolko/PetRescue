@@ -3,21 +3,18 @@ package com.wolkorp.petrescue.fragments
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
@@ -36,7 +33,9 @@ class EditarPerfilFragment : Fragment() {
     lateinit var profileImage : ImageView
     lateinit var btn_cambiar_img : Button
     lateinit var nombre : TextView
+    lateinit var apellido: TextView
     lateinit var celular : TextView
+    lateinit var localizacion: TextView
     lateinit var btnConfirmarCambios: Button
     lateinit var btnCancelar: Button
 
@@ -54,8 +53,10 @@ class EditarPerfilFragment : Fragment() {
         profileImage = fragmentView.findViewById(R.id.profile_img)
         btn_cambiar_img = fragmentView.findViewById(R.id.btn_cambiar_foto)
         nombre = fragmentView.findViewById(R.id.nombre)
+        apellido = fragmentView.findViewById(R.id.edit_text_apellido)
         celular = fragmentView.findViewById(R.id.celular)
-        btnConfirmarCambios = fragmentView.findViewById(R.id.btn_confirmar_cambios)
+        localizacion = fragmentView.findViewById(R.id.localizacion)
+        btnConfirmarCambios = fragmentView.findViewById(R.id.btn_subir_post)
         btnCancelar = fragmentView.findViewById(R.id.btnCancelar)
 
         return fragmentView
@@ -64,9 +65,58 @@ class EditarPerfilFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateActionBarTitle()
         showCurrentUser()
+    }
+
+
+    private fun updateActionBarTitle() {
+        // Barra superior de la activity que aparece encima del fragment
+        val actionBar: ActionBar? = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title =  "Editar Perfil"
+    }
+
+
+    private fun showCurrentUser() {
+        // todo: mejorar esta funcion, no es necesario llamar a firebase para obtener el usuario, lo puedo obtener del fragment anterior. Gasta datos
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if(currentUserId != null) {
+            val query =  FirebaseFirestore
+                                            .getInstance()
+                                            .collection("Users")
+                                            .document(currentUserId)
+
+            query.get().addOnSuccessListener { document ->
+
+                if (document != null) {
+                    val user: User = document.toObject()!!
+                    nombre.text =user.userName
+                    celular.text = user.phoneNumber
+                    apellido.text = user.userLastName
+                    localizacion.text= user.pais
+                    loadProfileImage(user.profileImageUrl)
+                    Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
+
+                } else {
+                    Toast.makeText(context, "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error getting user", exception)
+            }
+        }
 
     }
+
+
+    private fun loadProfileImage(profileImgUrl: String) {
+        Glide
+            .with(fragmentView)
+            .load(profileImgUrl)
+            .into(profileImage)
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -84,50 +134,6 @@ class EditarPerfilFragment : Fragment() {
             it.findNavController().navigate(R.id.action_editarPerfilFragment_to_perfilFragment)
         }
 
-    }
-
-
-    private fun showCurrentUser() {
-        // todo: mejorar esta funcion, no es necesario llamar a firebase para obtener el usuario, lo puedo obtener del fragment anterior. Gasta datos
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-
-        if(currentUserId != null) {
-            val query =  FirebaseFirestore
-                                            .getInstance()
-                                            .collection("Users")
-                                            .document(currentUserId)
-
-            query.get().addOnSuccessListener { document ->
-
-                if (document != null) {
-
-                    val user: User = document.toObject()!!
-                    nombre.text =user.userName
-                    celular.text = user.phoneNumber
-                    loadProfileImage(user.profileImageUrl)
-                    Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        "No existe el usuario con id $currentUserId",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting user", exception)
-            }
-        }
-
-    }
-
-
-    private fun loadProfileImage(profileImgUrl: String) {
-        Glide
-            .with(fragmentView)
-            .load(profileImgUrl)
-            .into(profileImage)
     }
 
 
@@ -155,6 +161,7 @@ class EditarPerfilFragment : Fragment() {
                     profileImage.setImageBitmap(bitmap)
 
                 }
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -188,10 +195,6 @@ class EditarPerfilFragment : Fragment() {
         } else {
             updateUserToFirebase(null)
         }
-
-
-
-
     }
 
 
@@ -203,15 +206,18 @@ class EditarPerfilFragment : Fragment() {
         // todo: Podria mejorarse. Ser mas eficiente
         if (profileImgUrl != null) {
             ref.update("userName", nombre.text.toString())
+            ref.update("userLastName", apellido.text.toString())
             ref.update("phoneNumber", celular.text.toString())
+            ref.update("pais", localizacion.text.toString())
             ref.update("profileImageUrl", profileImgUrl)
 
         // No se selecciono imagen, solo actualizo nombre y telefono
         } else {
             ref.update("userName", nombre.text.toString())
+            ref.update("userLastName", apellido.text.toString())
             ref.update("phoneNumber", celular.text.toString())
+            ref.update("pais", localizacion.text.toString())
         }
-
 
     }
 

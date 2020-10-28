@@ -107,46 +107,13 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getPetsFromFirebase()
         setUpReciclerView()
         setUpTextSwitcher()
     }
 
-    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
-    private fun getPetsFromFirebase() {
-        val query =  FirebaseFirestore
-                             .getInstance()
-                             .collection("Pets")
-                             .orderBy("fecha", Query.Direction.DESCENDING)
 
-        registrationListener = query.addSnapshotListener { snapshot, error  ->
-            if (error != null) {
-                //todo handle error
-                Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
-                return@addSnapshotListener
-            }
-
-            petsList.clear()
-            for (pet in snapshot!!) {
-                petsList.add(pet.toObject())
-            }
-
-            //Es importante que este metodo se llame despues de haber llenado la lista
-            //con los posts, sino no se muestra nada en el recyclerView
-            updatePetsList()
-        }
-    }
-
-
-    private fun updatePetsList() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
-    }
-  
-  
     private fun setUpReciclerView() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(
-            selectedPet
-        ) }
+        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
         reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
         CardSnapHelper().attachToRecyclerView(reciclerView);
 
@@ -162,44 +129,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-    private fun setUpTextSwitcher() {
-        locationTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
-            override fun makeView(): View {
-                val locationTextView = TextView(requireContext())
-                return locationTextView
-            }
-        })
-
-        petDescriptionTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
-            override fun makeView(): View {
-                val descriptionTextView = TextView(requireContext())
-                return descriptionTextView
-            }
-        })
-
-        locationTextSwitcher.setText("texto de prueba")
-        petDescriptionTextSwitcher.setText("Aca va la descripcion")
-    }
-
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    override fun onMapReady(googleMap: GoogleMap) {
-           //todo que pasa si google map es null
-            mapa = googleMap
-            // Agrega marcador en centro de Buenos Aires y mueve la camara
-            val buenosAires = LatLng(-34.6099, -58.4290)
-            mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
-            mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
-    }
-  
-  
     //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
     //el reciclerView deja de moverse
     private fun reciclerViewStoppedScrolling() {
@@ -237,6 +166,86 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
         locationTextSwitcher.setText(locationMessage)
         petDescriptionTextSwitcher.setText(descriptionMessage)
+    }
+
+
+    private fun setUpTextSwitcher() {
+        locationTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
+            override fun makeView(): View {
+                val locationTextView = TextView(requireContext())
+                return locationTextView
+            }
+        })
+
+        petDescriptionTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
+            override fun makeView(): View {
+                val descriptionTextView = TextView(requireContext())
+                return descriptionTextView
+            }
+        })
+
+    }
+
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    override fun onMapReady(googleMap: GoogleMap) {
+        //todo que pasa si google map es null
+        mapa = googleMap
+        // Agrega marcador en centro de Buenos Aires y mueve la camara
+        val buenosAires = LatLng(-34.6099, -58.4290)
+        mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
+        mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        getPetsFromFirebase()
+    }
+
+
+    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
+    private fun getPetsFromFirebase() {
+        val query =  FirebaseFirestore
+                             .getInstance()
+                             .collection("Pets")
+                             .orderBy("fecha", Query.Direction.DESCENDING)
+
+        registrationListener = query.addSnapshotListener { snapshot, error  ->
+            if (error != null) {
+                //todo handle error
+                Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            petsList.clear()
+            for (pet in snapshot!!) {
+                petsList.add(pet.toObject())
+            }
+
+            //Es importante que este metodo se llame despues de haber llenado la lista
+            //con los posts, sino no se muestra nada en el recyclerView
+            updatePetsList()
+        }
+    }
+
+
+    private fun updatePetsList() {
+        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
+
+        // Hace que la descripcion y fecha que se muestren al principio sean las del primer elemento de petlist
+        petDescriptionTextSwitcher.setText(petsList[0].descripcion)
+
+        val formattedDate = DateFormat.getDateInstance(DateFormat.MEDIUM).format(petsList[0].fecha.toDate())
+        val formattedHour = DateFormat.getTimeInstance(DateFormat.SHORT).format(petsList[0].fecha.toDate())
+        locationTextSwitcher.setText("$formattedDate   $formattedHour")
     }
 
 
@@ -378,6 +387,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val intent = PlacePicker.IntentBuilder()
             .setLatLong(-34.6099, -58.4290)  // Initial Latitude and Longitude the Map will load into
             .showLatLong(true)  // Show Coordinates in the Activity
+            .setMapZoom(11.0f)  // Map Zoom Level. Default: 14.0
             .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
             .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
             //.setMarkerDrawable(R.drawable.marker) // Change the default Marker Image
@@ -388,7 +398,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             //.setBottomViewColor(R.color.bottomViewColor) // Change Address View Background Color (Default: White)
             //.setMapRawResourceStyle(R.raw.map_style)  //Set Map Style (https://mapstyle.withgoogle.com/)
             .setMapType(MapType.NORMAL)
-            .setPlaceSearchBar(true, "AIzaSyBSirIeZ2xmrNez6vuOvo2yO3aZlPnv8gA") //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
+            //.setPlaceSearchBar(true, "AIzaSyBSirIeZ2xmrNez6vuOvo2yO3aZlPnv8gA") //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
             .onlyCoordinates(true)  //Get only Coordinates from Place Picker
             .hideLocationButton(true)   //Hide Location Button (Default: false)
             .disableMarkerAnimation(true)   //Disable Marker Animation (Default: false)
@@ -467,5 +477,5 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         registrationListener.remove()
     }
 
-
+    
 }
