@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -13,7 +14,6 @@ import com.google.firebase.Timestamp
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
 import java.text.DateFormat
-import java.util.*
 
 class PostListAdapter(private var postList: MutableList<Post>, var context: Context, var onPostClick: (Post) -> Unit): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
 
@@ -32,6 +32,8 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
         holder.setName(postList[position].nombreUsuario)
         holder.setHora(postList[position].hora)
         holder.setTexto(postList[position].texto)
+
+
 
         Glide
             .with(context)
