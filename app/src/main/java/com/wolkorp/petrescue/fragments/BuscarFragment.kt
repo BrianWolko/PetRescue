@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -107,8 +108,26 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpReciclerView()
         setUpTextSwitcher()
+        setUpReciclerView()
+    }
+
+
+    private fun setUpTextSwitcher() {
+        locationTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
+            override fun makeView(): View {
+                val locationTextView = TextView(requireContext())
+                return locationTextView
+            }
+        })
+
+        petDescriptionTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
+            override fun makeView(): View {
+                val descriptionTextView = TextView(requireContext())
+                return descriptionTextView
+            }
+        })
+
     }
 
 
@@ -129,13 +148,19 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-    //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
-    //el reciclerView deja de moverse
+    // Se encarga de actulizar todas las views del fragment cuando el reciclerView deja de moverse
     private fun reciclerViewStoppedScrolling() {
 
         val recivlerViewManager = reciclerView.layoutManager as CardSliderLayoutManager
         //Me da la posicion del principal item que se muestra en el recicler view
-        val position = recivlerViewManager.getActiveCardPosition()
+        val activeCardPosition = recivlerViewManager.getActiveCardPosition()
+        updateViewsToPosition(activeCardPosition)
+    }
+
+
+    private fun updateViewsToPosition(position: Int) {
+        // Si la posicion no existe salgo de la funcion
+        if (position == -1) return
 
         val petDescription = petsList.get(position).descripcion
         val latitude = petsList.get(position).latitud
@@ -168,23 +193,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         petDescriptionTextSwitcher.setText(descriptionMessage)
     }
 
-
-    private fun setUpTextSwitcher() {
-        locationTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
-            override fun makeView(): View {
-                val locationTextView = TextView(requireContext())
-                return locationTextView
-            }
-        })
-
-        petDescriptionTextSwitcher.setFactory(object : ViewSwitcher.ViewFactory {
-            override fun makeView(): View {
-                val descriptionTextView = TextView(requireContext())
-                return descriptionTextView
-            }
-        })
-
-    }
 
 
     /**
@@ -228,25 +236,21 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             petsList.clear()
             for (pet in snapshot!!) {
                 petsList.add(pet.toObject())
+                Log.d("BuscarFragment", "SE AGREGO UN OBJETO")
             }
+            Log.d("BuscarFragment", "SE TERMINARION DE AGREGAR OBJETOS \n \n")
 
-            //Es importante que este metodo se llame despues de haber llenado la lista
-            //con los posts, sino no se muestra nada en el recyclerView
-            updatePetsList()
+            // Es importante que esta linea se llame despues de haber llenado la lista en el for looop
+            reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
+
+            //todo: cambiar el nombre de este metodo
+            reciclerViewStoppedScrolling()
+
         }
     }
 
 
-    private fun updatePetsList() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
 
-        // Hace que la descripcion y fecha que se muestren al principio sean las del primer elemento de petlist
-        petDescriptionTextSwitcher.setText(petsList[0].descripcion)
-
-        val formattedDate = DateFormat.getDateInstance(DateFormat.MEDIUM).format(petsList[0].fecha.toDate())
-        val formattedHour = DateFormat.getTimeInstance(DateFormat.SHORT).format(petsList[0].fecha.toDate())
-        locationTextSwitcher.setText("$formattedDate   $formattedHour")
-    }
 
 
     // Funcion que se llama cuando se toca el botton de la ActionBar
@@ -344,7 +348,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             }
 
         }
-
 
     }
 
@@ -448,7 +451,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
                  Toast.makeText(context, "Se subio la mascota con exito!", Toast.LENGTH_LONG).show()
             }
 
-
+        selectedPhotoUri = null
     }
 
 
