@@ -8,12 +8,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.Button
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
@@ -26,7 +30,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
-import kotlinx.android.synthetic.main.bottom_sheet_add_post.*
+import kotlinx.android.synthetic.main.category_container.view.*
+import kotlinx.android.synthetic.main.fragment_historias.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -57,6 +62,9 @@ class HistoriasFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        // Argumento cargado en CategoriasFragment con el nombre de la categoria
+        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
     }
 
 
@@ -69,9 +77,6 @@ class HistoriasFragment : Fragment() {
         fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
         postsRecyclerView = fragmentView.findViewById(R.id.rec_posts)
         postsRecyclerView.setHasFixedSize(true)
-
-        // Argumento cargado en CategoriasFragment con el nombre de la categoria
-        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
 
         return fragmentView
     }
@@ -86,6 +91,7 @@ class HistoriasFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         updateActionBarTitle()
+        updateCollapsingToolBar()
         getPostsFromCategory(selectedCategory)
     }
 
@@ -94,6 +100,33 @@ class HistoriasFragment : Fragment() {
         // Barra superior de la activity que aparece encima del fragment
         val actionBar: ActionBar? = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title =  selectedCategory
+    }
+
+
+    private fun updateCollapsingToolBar() {
+        val imageUrl = HistoriasFragmentArgs.fromBundle(requireArguments()).categoryImageUrl
+        Glide
+            .with(requireContext())
+            .load(imageUrl)
+            .into(collapsing_Toolbar_image)
+
+        val categoryDescription: String
+        val categoryName =  HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
+        categoryDescription = when (categoryName) {
+            "Buscar Familia" -> getString(R.string.descripcion_categoria_buscar_familia)
+
+            "Buscar Chofer" -> getString(R.string.descripcion_categoria_buscar_chofer)
+
+            "Asesoria" -> getString(R.string.descripcion_categoria_aesoria)
+
+            else -> { // Note the block
+                "Sin descripcion"
+            }
+        }
+
+
+        texto_descripcion_categoria.text = categoryDescription
+
     }
 
 
@@ -111,7 +144,11 @@ class HistoriasFragment : Fragment() {
 
             if (error != null) {
                 //todo Falta mejorar codigo para manejar errores caso de que exista uno
-                Toast.makeText(context, "No se pudieron obtener las historias.\nIntente de nuevo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "No se pudieron obtener las historias.\nIntente de nuevo",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.d("HistoriasFragment", "Error getting posts: $error")
                 return@addSnapshotListener
             }
@@ -129,14 +166,18 @@ class HistoriasFragment : Fragment() {
 
     private fun updateRecyclerView() {
         //Esta es la linea de codigo que une el adapter con el recyclerView y permite que funcinonen juntos
-        postsRecyclerView.adapter  = PostListAdapter(postsList, requireContext()) { selectedPost -> onPostClick(selectedPost) }
+        postsRecyclerView.adapter  = PostListAdapter(postsList, requireContext()) { selectedPost -> onPostClick(
+            selectedPost
+        ) }
     }
 
 
     //Se llama cuando el usuario toca un post
     private fun onPostClick(selectedPost: Post) {
         //Guarda el post en las clases autogeneradas del navgraph que permiten pasar argumentos entre fragments
-        val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(selectedPost)
+        val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(
+            selectedPost
+        )
         fragmentView.findNavController().navigate(action)
     }
 
@@ -157,7 +198,12 @@ class HistoriasFragment : Fragment() {
         // Cargar y mostrar el BottomSheet
         var addPetBottomSheet = LayoutInflater
                                         .from(requireContext().applicationContext)
-                                        .inflate(R.layout.bottom_sheet_add_post, fragmentView.findViewById(R.id.bottomSheetContainer))
+                                        .inflate(
+                                            R.layout.bottom_sheet_add_post,
+                                            fragmentView.findViewById(
+                                                R.id.bottomSheetContainer
+                                            )
+                                        )
 
         val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetTheme)
         // Permite que se muestre completo el BottomsSheetDialog sino no se muestra por completo
@@ -240,7 +286,16 @@ class HistoriasFragment : Fragment() {
 
 
         val id = FirebaseFirestore.getInstance().collection("Posts").document().getId()
-        val post = Post(id,fullName, horaPost, textoPost, imageUrl, categoriaSeleccionada, idUsuario, true)
+        val post = Post(
+            id,
+            fullName,
+            horaPost,
+            textoPost,
+            imageUrl,
+            categoriaSeleccionada,
+            idUsuario,
+            true
+        )
 
         FirebaseFirestore.getInstance().collection("Posts").document(id).set(post)
 
@@ -251,7 +306,10 @@ class HistoriasFragment : Fragment() {
 
 
     private fun getCurrentUserName() : String {
-        val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val prefs = requireContext().getSharedPreferences(
+            getString(R.string.prefs_file),
+            Context.MODE_PRIVATE
+        )
         val userName = prefs.getString("userName", null)
         val userLastName = prefs.getString("userLastName", null)
 

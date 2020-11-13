@@ -71,7 +71,10 @@
         <action
             android:id="@+id/action_editarPerfilFragment_to_perfilFragment"
             app:destination="@id/perfilFragment" />
-   </fragment>
+        <argument
+            android:name="user"
+            app:argType="com.wolkorp.petrescue.models.User" />
+    </fragment>
 
     <fragment
         android:id="@+id/historiasFragment"
@@ -84,6 +87,9 @@
         <action
             android:id="@+id/action_historiasFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
+        <argument
+            android:name="categoryImageUrl"
+            app:argType="string" />
     </fragment>
   
     <fragment

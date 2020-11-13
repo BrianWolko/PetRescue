@@ -21,12 +21,13 @@ import kotlinx.android.synthetic.main.fragment_perfil.*
 
 class PerfilFragment : Fragment() {
 
-    lateinit var fragmentView : View
-    lateinit var nombre : TextView
-    lateinit var pais : TextView
-    lateinit var email : TextView
-    lateinit var numero: TextView
-    lateinit var profileImage : ImageView
+    private lateinit var user: User
+    private lateinit var fragmentView : View
+    private lateinit var nombre : TextView
+    private lateinit var pais : TextView
+    private lateinit var email : TextView
+    private lateinit var numero: TextView
+    private lateinit var profileImage : ImageView
 
 
 
@@ -81,29 +82,34 @@ class PerfilFragment : Fragment() {
                 query.addSnapshotListener{ document, e ->
                 if (document != null) {
 
-                    val user: User = document.toObject()!!
+                    user = document.toObject()!!
                     nombre.text ="${user.userName} ${user.userLastName}"
                     pais.text = user.pais
                     email.text = user.email
                     numero.text = user.phoneNumber
                     updateImage(user.profileImageUrl)
-                    Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
+                    Toast.makeText(getContext(), "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
 
                 } else {
-                    Toast.makeText(context, "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
+                    Toast.makeText(getContext(), "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
                 }
             }
 
 
         }
+        Toast.makeText(getContext(), "Prueba para ver si hace muchos llamados a firebase o es algo de Toast", Toast.LENGTH_LONG).show()
+
     }
 
 
     private fun updateImage(link : String){
-        Glide
-            .with(fragmentView)
-            .load(link)
-            .into(profileImage)
+        // Solo cargar imagen con glide si existe url de imagen del usuario
+        if(user.profileImageUrl.isNotEmpty()) {
+            Glide
+                .with(fragmentView)
+                .load(link)
+                .into(profileImage)
+        }
     }
 
 
@@ -113,7 +119,9 @@ class PerfilFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_edit_perfil -> {
-                fragmentView.findNavController().navigate(R.id.action_perfilFragment_to_editarPerfilFragment)
+                //Guarda el usuario en las clases autogeneradas del navgraph para pasarlo a otro fragment
+                val action = PerfilFragmentDirections.actionPerfilFragmentToEditarPerfilFragment(this.user)
+                fragmentView.findNavController().navigate(action)
             }
         }
         return super.onOptionsItemSelected(item)

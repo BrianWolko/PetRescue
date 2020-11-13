@@ -250,9 +250,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-
-
-
     // Funcion que se llama cuando se toca el botton de la ActionBar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -309,8 +306,11 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val uploadPetButton: Button = addPetBottomSheet.findViewById(R.id.buttonUploadPet)
         uploadPetButton.setOnClickListener {
 
-            uploadToFirebase()
-            bottomSheetDialog.dismiss()
+            val resultado = uploadToFirebase()
+            if (resultado == true) {
+                bottomSheetDialog.dismiss()
+
+            }
         }
 
         bottomSheetDialog.setContentView(addPetBottomSheet)
@@ -410,7 +410,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-    private fun uploadToFirebase() {
+    private fun uploadToFirebase(): Boolean {
         val fileName = UUID.randomUUID().toString()
         val refStorage = FirebaseStorage
                                             .getInstance()
@@ -419,17 +419,31 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
         if(selectedPhotoUri == null) {
             Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una foto", Toast.LENGTH_LONG).show()
-            return
+            return false
         }
-            // Esta linea sube solo la imagen a Firebase Storage
-            refStorage.putFile(selectedPhotoUri!!)
-                .addOnSuccessListener {
-                    // Link con la localizacion de la foto en Firebase Storage
-                    refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
-                        // Solo una vez subida la imagen con exito aStorage se sube la mascota  a Firebase Firestore
-                        uploadPetToFirebase(firestoreUrl.toString())
-                    }
+
+        if(this.selectedLongitude == 0.0 && this.selectedLatitude == 0.0) {
+            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una localizacion", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if(this.hour < 0 || this.day <= 0 ) {
+            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una fecha y hora", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        // Esta linea sube solo la imagen a Firebase Storage
+        refStorage.putFile(selectedPhotoUri!!).addOnSuccessListener {
+                // Link con la localizacion de la foto en Firebase Storage
+                refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
+                    // Solo una vez subida la imagen con exito aStorage se sube la mascota  a Firebase Firestore
+                    uploadPetToFirebase(firestoreUrl.toString())
+
                 }
+        }
+
+        // todo: deberia esperar al success listener
+        return true
     }
 
 

@@ -42,7 +42,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:elevation="8dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="50dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="@+id/guideline6">
@@ -50,6 +50,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/profile_img"
+            android:src="@drawable/blank_profile_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
@@ -73,6 +74,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginBottom="4dp"
+        android:layout_marginStart="10dp"
         android:src="@drawable/ic_baseline_location"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/pais"

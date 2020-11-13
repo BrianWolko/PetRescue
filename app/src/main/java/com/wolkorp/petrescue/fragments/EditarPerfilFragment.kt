@@ -29,15 +29,18 @@ import java.util.*
 
 class EditarPerfilFragment : Fragment() {
 
-    lateinit var fragmentView : View
-    lateinit var profileImage : ImageView
-    lateinit var btn_cambiar_img : Button
-    lateinit var nombre : TextView
-    lateinit var apellido: TextView
-    lateinit var celular : TextView
-    lateinit var localizacion: TextView
-    lateinit var btnConfirmarCambios: Button
-    lateinit var btnCancelar: Button
+
+
+    private lateinit var user: User
+    private lateinit var fragmentView : View
+    private lateinit var profileImage : ImageView
+    private lateinit var btn_cambiar_img : Button
+    private lateinit var nombre : TextView
+    private lateinit var apellido: TextView
+    private lateinit var celular : TextView
+    private lateinit var localizacion: TextView
+    private lateinit var btnConfirmarCambios: Button
+    private lateinit var btnCancelar: Button
 
     private val PICK_IMAGE_CODE = 1000
     private var selectedPhotoUri: Uri? = null
@@ -79,42 +82,27 @@ class EditarPerfilFragment : Fragment() {
 
     private fun showCurrentUser() {
         // todo: mejorar esta funcion, no es necesario llamar a firebase para obtener el usuario, lo puedo obtener del fragment anterior. Gasta datos
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
-        if(currentUserId != null) {
-            val query =  FirebaseFirestore
-                                            .getInstance()
-                                            .collection("Users")
-                                            .document(currentUserId)
+        user = EditarPerfilFragmentArgs.fromBundle(requireArguments()).user
 
-            query.get().addOnSuccessListener { document ->
-
-                if (document != null) {
-                    val user: User = document.toObject()!!
-                    nombre.text =user.userName
-                    celular.text = user.phoneNumber
-                    apellido.text = user.userLastName
-                    localizacion.text= user.pais
-                    loadProfileImage(user.profileImageUrl)
-                    Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
-
-                } else {
-                    Toast.makeText(context, "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting user", exception)
-            }
-        }
+        nombre.text =user.userName
+        celular.text = user.phoneNumber
+        apellido.text = user.userLastName
+        localizacion.text= user.pais
+        loadProfileImage(user.profileImageUrl)
 
     }
 
 
     private fun loadProfileImage(profileImgUrl: String) {
-        Glide
-            .with(fragmentView)
-            .load(profileImgUrl)
-            .into(profileImage)
+        // Solo cargar imagen con glide si existe url de imagen del usuario
+        if(user.profileImageUrl.isNotEmpty()) {
+            Glide
+                .with(fragmentView)
+                .load(profileImgUrl)
+                .into(profileImage)
+        }
+
     }
 
 
@@ -126,6 +114,7 @@ class EditarPerfilFragment : Fragment() {
         }
 
         btnConfirmarCambios.setOnClickListener{
+            //async { updateUser() }.await()
             updateUser()
             it.findNavController().navigate(R.id.action_editarPerfilFragment_to_perfilFragment)
         }
@@ -170,7 +159,7 @@ class EditarPerfilFragment : Fragment() {
     }
 
 
-    private fun updateUser() {
+     private fun updateUser() {
 
         // Se selecciono una imagen
         if (selectedPhotoUri != null) {
