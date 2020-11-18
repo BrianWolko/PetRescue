@@ -39,6 +39,7 @@ class CategoriasFragment : Fragment() {
     private lateinit var helloMessage: TextView
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

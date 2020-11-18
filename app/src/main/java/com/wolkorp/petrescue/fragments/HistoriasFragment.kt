@@ -223,8 +223,13 @@ class HistoriasFragment : Fragment() {
 
         // Boton para enviar el post
         btnEnviar.setOnClickListener{
-            uploadPostToFirebase()
-            bottomSheetDialog.dismiss()
+            //uploadPostToFirebase()
+            //bottomSheetDialog.dismiss()
+
+            val resultado = uploadPostToFirebase()
+            if (resultado == true) {
+                bottomSheetDialog.dismiss()
+            }
         }
 
         bottomSheetDialog.setContentView(addPetBottomSheet)
@@ -251,12 +256,18 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    private fun uploadPostToFirebase() {
+    private fun uploadPostToFirebase(): Boolean {
         val fileName = UUID.randomUUID().toString()
         val refStorage = FirebaseStorage
                                            .getInstance()
                                            .reference
                                            .child("ImgsPost/$fileName")
+
+
+        if(textoPost.text.toString().isEmpty()) {
+            Toast.makeText(context, "La publicacion no puede estar vacia", Toast.LENGTH_LONG).show()
+            return false
+        }
 
         // Si se selecciono una imagen entra a este if
         if(selectedPhotoUri != null) {
@@ -273,6 +284,8 @@ class HistoriasFragment : Fragment() {
         } else {
             uploadPostToFirebase("post sin foto")
         }
+
+        return true
     }
 
 
