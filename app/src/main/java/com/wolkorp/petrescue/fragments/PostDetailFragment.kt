@@ -122,26 +122,6 @@ class PostDetailFragment : Fragment() {
     }
 
 
-    // funcion para crear una lista de comentarios con la informacion del usuario, lista que se usa en el recycler
-    private fun getUserFromFirebase(idUsuario : String,comment : Comentario){
-        val query = FirebaseFirestore.getInstance().collection("Users").document(idUsuario)
-        query.addSnapshotListener { document, error ->
-            if (error != null) {
-                Log.d(ContentValues.TAG, "Listen failed.", error)
-                return@addSnapshotListener
-            }
-            if (document != null) {
-                val user: User = document.toObject()!!
-                val userName = "${user.userName} ${user.userLastName}"
-                commentsFullList.add(ComentarioFull(comment.texto,idUsuario,comment.hora,userName,user.profileImageUrl,comment.id))
-
-            }
-
-            configureRecyclerView()
-        }
-
-
-    }
 
     private fun updateImage(link : String){
         Glide
@@ -207,6 +187,28 @@ class PostDetailFragment : Fragment() {
         for (comment in commentsList){
             getUserFromFirebase(comment.idUsuario, comment)
         }
+
+    }
+
+
+    // funcion para crear una lista de comentarios con la informacion del usuario, lista que se usa en el recycler
+    private fun getUserFromFirebase(idUsuario : String,comment : Comentario){
+        val query = FirebaseFirestore.getInstance().collection("Users").document(idUsuario)
+        query.addSnapshotListener { document, error ->
+            if (error != null) {
+                Log.d(ContentValues.TAG, "Listen failed.", error)
+                return@addSnapshotListener
+            }
+            if (document != null) {
+                val user: User = document.toObject()!!
+                val userName = "${user.userName} ${user.userLastName}"
+                commentsFullList.add(ComentarioFull(comment.texto,idUsuario,comment.hora,userName,user.profileImageUrl,comment.id))
+
+            }
+
+            configureRecyclerView()
+        }
+
 
     }
 
