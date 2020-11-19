@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_package_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="#F5F5F5"
     android:backgroundTintMode="add"
-    app:cardCornerRadius="0dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="236dp"
             android:text="Nombre Usuario"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
@@ -67,6 +68,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="260dp"
             android:text="Hace 1 hora"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintTop_toBottomOf="@+id/txt_user_name" />
@@ -89,6 +91,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:text="Texto del post"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
@@ -101,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

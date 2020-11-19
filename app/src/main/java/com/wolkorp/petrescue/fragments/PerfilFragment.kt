@@ -2,11 +2,8 @@ package com.wolkorp.petrescue.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,12 +21,20 @@ import kotlinx.android.synthetic.main.fragment_perfil.*
 
 class PerfilFragment : Fragment() {
 
-    lateinit var fragmentView : View
-    lateinit var nombre : TextView
-    lateinit var pais : TextView
-    lateinit var email : TextView
-    lateinit var numero: TextView
-    lateinit var profileImage : ImageView
+    private lateinit var user: User
+    private lateinit var fragmentView : View
+    private lateinit var nombre : TextView
+    private lateinit var pais : TextView
+    private lateinit var email : TextView
+    private lateinit var numero: TextView
+    private lateinit var profileImage : ImageView
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,16 +50,18 @@ class PerfilFragment : Fragment() {
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.perfil_fragment_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
     override fun onStart() {
         super.onStart()
         loadUserData()
 
         btn_ver_posts_activos.setOnClickListener {
             it.findNavController().navigate(R.id.action_perfilFragment_to_misPostsFragment)
-        }
-
-        btn_editar.setOnClickListener {
-            it.findNavController().navigate(R.id.action_perfilFragment_to_editarPerfilFragment)
         }
 
         logOutButton.setOnClickListener {
@@ -71,35 +78,51 @@ class PerfilFragment : Fragment() {
                                             .collection("Users")
                                             .document(currentUserId)
 
-            //query.get().addOnSuccessListener { document ->
-                query.addSnapshotListener{ document,e ->
+
+                query.addSnapshotListener{ document, e ->
                 if (document != null) {
 
-                    val user: User = document.toObject()!!
-                    nombre.text =user.userName
+                    user = document.toObject()!!
+                    nombre.text ="${user.userName} ${user.userLastName}"
                     pais.text = user.pais
                     email.text = user.email
                     numero.text = user.phoneNumber
                     updateImage(user.profileImageUrl)
-                    Toast.makeText(context, "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
+                    Toast.makeText(getContext(), "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
 
-                } else {
-                    Toast.makeText(context, "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
                 }
             }
 
 
         }
+
     }
 
 
     private fun updateImage(link : String){
-        Glide
-            .with(fragmentView)
-            .load(link)
-            .into(profileImage)
+        // Solo cargar imagen con glide si existe url de imagen del usuario
+        if(user.profileImageUrl.isNotEmpty()) {
+            Glide
+                .with(fragmentView)
+                .load(link)
+                .into(profileImage)
+        }
     }
 
+
+
+    // Se llama cuando se toca el botton de la barra superior
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+
+            R.id.menu_edit_perfil -> {
+                //Guarda el usuario en las clases autogeneradas del navgraph para pasarlo a otro fragment
+                val action = PerfilFragmentDirections.actionPerfilFragmentToEditarPerfilFragment(this.user)
+                fragmentView.findNavController().navigate(action)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     // Limpia las shared preferences, sale de la cuenta
     private fun logOut() {

@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -107,58 +108,8 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getPetsFromFirebase()
-        setUpReciclerView()
         setUpTextSwitcher()
-    }
-
-    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
-    private fun getPetsFromFirebase() {
-        val query =  FirebaseFirestore
-                             .getInstance()
-                             .collection("Pets")
-                             .orderBy("fecha", Query.Direction.DESCENDING)
-
-        registrationListener = query.addSnapshotListener { snapshot, error  ->
-            if (error != null) {
-                //todo handle error
-                Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
-                return@addSnapshotListener
-            }
-
-            petsList.clear()
-            for (pet in snapshot!!) {
-                petsList.add(pet.toObject())
-            }
-
-            //Es importante que este metodo se llame despues de haber llenado la lista
-            //con los posts, sino no se muestra nada en el recyclerView
-            updatePetsList()
-        }
-    }
-
-
-    private fun updatePetsList() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
-    }
-  
-  
-    private fun setUpReciclerView() {
-        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(
-            selectedPet
-        ) }
-        reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
-        CardSnapHelper().attachToRecyclerView(reciclerView);
-
-        //Se activa cuando se desliza  el RecyclerView
-        reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    //El RecyclerView paro de moverse
-                    reciclerViewStoppedScrolling()
-                }
-            }
-        })
+        setUpReciclerView()
     }
 
 
@@ -177,36 +128,39 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             }
         })
 
-        locationTextSwitcher.setText("texto de prueba")
-        petDescriptionTextSwitcher.setText("Aca va la descripcion")
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    override fun onMapReady(googleMap: GoogleMap) {
-           //todo que pasa si google map es null
-            mapa = googleMap
-            // Agrega marcador en centro de Buenos Aires y mueve la camara
-            val buenosAires = LatLng(-34.6099, -58.4290)
-            mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
-            mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
+    private fun setUpReciclerView() {
+        reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
+        reciclerView.layoutManager = CardSliderLayoutManager(requireContext())
+        CardSnapHelper().attachToRecyclerView(reciclerView);
+
+        //Se activa cuando se desliza  el RecyclerView
+        reciclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    //El RecyclerView paro de moverse
+                    reciclerViewStoppedScrolling()
+                }
+            }
+        })
     }
-  
-  
-    //Esta es la funcion que se encarga de actulizar todas las cosas del fragment cuando
-    //el reciclerView deja de moverse
+
+
+    // Se encarga de actulizar todas las views del fragment cuando el reciclerView deja de moverse
     private fun reciclerViewStoppedScrolling() {
 
         val recivlerViewManager = reciclerView.layoutManager as CardSliderLayoutManager
         //Me da la posicion del principal item que se muestra en el recicler view
-        val position = recivlerViewManager.getActiveCardPosition()
+        val activeCardPosition = recivlerViewManager.getActiveCardPosition()
+        updateViewsToPosition(activeCardPosition)
+    }
+
+
+    private fun updateViewsToPosition(position: Int) {
+        // Si la posicion no existe salgo de la funcion
+        if (position == -1) return
 
         val petDescription = petsList.get(position).descripcion
         val latitude = petsList.get(position).latitud
@@ -237,6 +191,62 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
         locationTextSwitcher.setText(locationMessage)
         petDescriptionTextSwitcher.setText(descriptionMessage)
+    }
+
+
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    override fun onMapReady(googleMap: GoogleMap) {
+        //todo que pasa si google map es null
+        mapa = googleMap
+        // Agrega marcador en centro de Buenos Aires y mueve la camara
+        val buenosAires = LatLng(-34.6099, -58.4290)
+        mapa.addMarker(MarkerOptions().position(buenosAires).title("Ort Almagro"))
+        mapa.animateCamera(CameraUpdateFactory.newLatLngZoom(buenosAires, 11f))
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        getPetsFromFirebase()
+    }
+
+
+    //Devuelve todos las mascota en el mapa desde firebase y los agrega a la lista que despues se muestra  el recylcerView
+    private fun getPetsFromFirebase() {
+        val query =  FirebaseFirestore
+                             .getInstance()
+                             .collection("Pets")
+                             .orderBy("fecha", Query.Direction.DESCENDING)
+
+        registrationListener = query.addSnapshotListener { snapshot, error  ->
+            if (error != null) {
+                //todo handle error
+                Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            petsList.clear()
+            for (pet in snapshot!!) {
+                petsList.add(pet.toObject())
+                Log.d("BuscarFragment", "SE AGREGO UN OBJETO")
+            }
+            Log.d("BuscarFragment", "SE TERMINARION DE AGREGAR OBJETOS \n \n")
+
+            // Es importante que esta linea se llame despues de haber llenado la lista en el for looop
+            reciclerView.adapter = PetsAdapter(petsList, requireContext()) { selectedPet -> onPetClick(selectedPet) }
+
+            //todo: cambiar el nombre de este metodo
+            reciclerViewStoppedScrolling()
+
+        }
     }
 
 
@@ -296,8 +306,11 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val uploadPetButton: Button = addPetBottomSheet.findViewById(R.id.buttonUploadPet)
         uploadPetButton.setOnClickListener {
 
-            uploadToFirebase()
-            bottomSheetDialog.dismiss()
+            val resultado = uploadToFirebase()
+            if (resultado == true) {
+                bottomSheetDialog.dismiss()
+
+            }
         }
 
         bottomSheetDialog.setContentView(addPetBottomSheet)
@@ -335,7 +348,6 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             }
 
         }
-
 
     }
 
@@ -378,6 +390,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val intent = PlacePicker.IntentBuilder()
             .setLatLong(-34.6099, -58.4290)  // Initial Latitude and Longitude the Map will load into
             .showLatLong(true)  // Show Coordinates in the Activity
+            .setMapZoom(11.0f)  // Map Zoom Level. Default: 14.0
             .setAddressRequired(true) // Set If return only Coordinates if cannot fetch Address for the coordinates. Default: True
             .hideMarkerShadow(true) // Hides the shadow under the map marker. Default: False
             //.setMarkerDrawable(R.drawable.marker) // Change the default Marker Image
@@ -388,7 +401,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             //.setBottomViewColor(R.color.bottomViewColor) // Change Address View Background Color (Default: White)
             //.setMapRawResourceStyle(R.raw.map_style)  //Set Map Style (https://mapstyle.withgoogle.com/)
             .setMapType(MapType.NORMAL)
-            .setPlaceSearchBar(true, "AIzaSyBSirIeZ2xmrNez6vuOvo2yO3aZlPnv8gA") //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
+            //.setPlaceSearchBar(true, "AIzaSyBSirIeZ2xmrNez6vuOvo2yO3aZlPnv8gA") //Activate GooglePlace Search Bar. Default is false/not activated. SearchBar is a chargeable feature by Google
             .onlyCoordinates(true)  //Get only Coordinates from Place Picker
             .hideLocationButton(true)   //Hide Location Button (Default: false)
             .disableMarkerAnimation(true)   //Disable Marker Animation (Default: false)
@@ -397,7 +410,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
     }
 
 
-    private fun uploadToFirebase() {
+    private fun uploadToFirebase(): Boolean {
         val fileName = UUID.randomUUID().toString()
         val refStorage = FirebaseStorage
                                             .getInstance()
@@ -406,17 +419,31 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
 
         if(selectedPhotoUri == null) {
             Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una foto", Toast.LENGTH_LONG).show()
-            return
+            return false
         }
-            // Esta linea sube solo la imagen a Firebase Storage
-            refStorage.putFile(selectedPhotoUri!!)
-                .addOnSuccessListener {
-                    // Link con la localizacion de la foto en Firebase Storage
-                    refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
-                        // Solo una vez subida la imagen con exito aStorage se sube la mascota  a Firebase Firestore
-                        uploadPetToFirebase(firestoreUrl.toString())
-                    }
+
+        if(this.selectedLongitude == 0.0 && this.selectedLatitude == 0.0) {
+            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una localizacion", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        if(this.hour < 0 || this.day <= 0 ) {
+            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una fecha y hora", Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        // Esta linea sube solo la imagen a Firebase Storage
+        refStorage.putFile(selectedPhotoUri!!).addOnSuccessListener {
+                // Link con la localizacion de la foto en Firebase Storage
+                refStorage.downloadUrl.addOnSuccessListener { firestoreUrl ->
+                    // Solo una vez subida la imagen con exito aStorage se sube la mascota  a Firebase Firestore
+                    uploadPetToFirebase(firestoreUrl.toString())
+
                 }
+        }
+
+        // todo: deberia esperar al success listener
+        return true
     }
 
 
@@ -438,7 +465,7 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
                  Toast.makeText(context, "Se subio la mascota con exito!", Toast.LENGTH_LONG).show()
             }
 
-
+        selectedPhotoUri = null
     }
 
 
@@ -467,5 +494,5 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         registrationListener.remove()
     }
 
-
+    
 }

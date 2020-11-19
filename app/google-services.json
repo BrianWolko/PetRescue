@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "897914927684-psiu3h3ki4e1fv4tcaimr6n3l8g2iooq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wolkorp.petrescue",
+            "certificate_hash": "9dea6913a5603e41f8687d641c53bce065cbe89f"
+          }
+        },
+        {
+          "client_id": "897914927684-nth90q5vq2tkct217r49ul0cpnl6mfti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wolkorp.petrescue",
+            "certificate_hash": "ed6ee96e3f29910aae5cd54481ef8a75010107c4"
+          }
+        },
+        {
+          "client_id": "897914927684-v2rgju6mh5q09cvug8b8lmrkd09qo6ed.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wolkorp.petrescue",
+            "certificate_hash": "782ae1324671e4ade24ad7c42bbd9ce34de0d183"
+          }
+        },
+        {
           "client_id": "897914927684-om2e71k8jiivf2l2jn2og32mb3e368n4.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -28,7 +52,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "897914927684-om2e71k8jiivf2l2jn2og32mb3e368n4.apps.googleusercontent.com",
+              "client_id": "897914927684-g3sj655f9uv06k33r1qs4145n68t4ite.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

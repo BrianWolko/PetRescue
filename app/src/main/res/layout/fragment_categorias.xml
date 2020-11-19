@@ -10,21 +10,22 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profile_picture"
-        android:layout_width="46dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:elevation="8dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/foto_perfil"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/foto_perfil" />
+            android:src="@drawable/blank_profile_image" />
 
     </androidx.cardview.widget.CardView>
 

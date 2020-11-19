@@ -9,15 +9,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.*
+import android.widget.Button
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -26,6 +31,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
+import kotlinx.android.synthetic.main.category_container.view.*
+import kotlinx.android.synthetic.main.fragment_historias.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,12 +43,10 @@ class HistoriasFragment : Fragment() {
 
     private lateinit var fragmentView: View
     private lateinit var postsRecyclerView: RecyclerView
-    //Una lista simple con los objetos que va a mostrar postsRecyclerView
+    // Lista con los objetos que va a mostrar postsRecyclerView
     private var postsList: ArrayList<Post> = ArrayList()
 
-    private lateinit var popupWindow: PopupWindow
     private lateinit var textoPost: TextView
-    private lateinit var btnSalir: Button
     private lateinit var btnEnviar: Button
     private lateinit var btnFoto: Button
     private lateinit var categoria : Spinner
@@ -58,6 +63,9 @@ class HistoriasFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        // Argumento cargado en CategoriasFragment con el nombre de la categoria
+        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
     }
 
 
@@ -70,19 +78,6 @@ class HistoriasFragment : Fragment() {
         fragmentView = inflater.inflate(R.layout.fragment_historias, container, false)
         postsRecyclerView = fragmentView.findViewById(R.id.rec_posts)
         postsRecyclerView.setHasFixedSize(true)
-
-
-        // inicializar popUpView con sus vistast corresondientes
-        val popupView = LayoutInflater.from(activity).inflate(R.layout.popup_addpost, null)
-        popupWindow = PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT)
-        btnSalir = popupView.findViewById(R.id.btnSalir)
-        btnEnviar = popupView.findViewById(R.id.btn_confirmar_cambios)
-        btnFoto = popupView.findViewById(R.id.btnFoto)
-        textoPost = popupView.findViewById(R.id.texto_descripcion_mascota)
-        categoria = popupView.findViewById(R.id.spinnerCategorias)
-
-        // Argumento tipo string cargado en CategoriasFragment con el nombre de la categoria
-        selectedCategory = HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
 
         return fragmentView
     }
@@ -97,6 +92,7 @@ class HistoriasFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         updateActionBarTitle()
+        updateCollapsingToolBar()
         getPostsFromCategory(selectedCategory)
     }
 
@@ -105,6 +101,33 @@ class HistoriasFragment : Fragment() {
         // Barra superior de la activity que aparece encima del fragment
         val actionBar: ActionBar? = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title =  selectedCategory
+    }
+
+
+    private fun updateCollapsingToolBar() {
+        val imageUrl = HistoriasFragmentArgs.fromBundle(requireArguments()).categoryImageUrl
+        Glide
+            .with(requireContext())
+            .load(imageUrl)
+            .into(collapsing_Toolbar_image)
+
+        val categoryDescription: String
+        val categoryName =  HistoriasFragmentArgs.fromBundle(requireArguments()).selectedCategory
+        categoryDescription = when (categoryName) {
+            "Buscar Familia" -> getString(R.string.descripcion_categoria_buscar_familia)
+
+            "Buscar Chofer" -> getString(R.string.descripcion_categoria_buscar_chofer)
+
+            "Asesoria" -> getString(R.string.descripcion_categoria_aesoria)
+
+            else -> { // Note the block
+                "Sin descripcion"
+            }
+        }
+
+
+        texto_descripcion_categoria.text = categoryDescription
+
     }
 
 
@@ -122,7 +145,11 @@ class HistoriasFragment : Fragment() {
 
             if (error != null) {
                 //todo Falta mejorar codigo para manejar errores caso de que exista uno
-                Toast.makeText(context, "No se pudieron obtener las historias.\nIntente de nuevo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "No se pudieron obtener las historias.\nIntente de nuevo",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.d("HistoriasFragment", "Error getting posts: $error")
                 return@addSnapshotListener
             }
@@ -140,14 +167,18 @@ class HistoriasFragment : Fragment() {
 
     private fun updateRecyclerView() {
         //Esta es la linea de codigo que une el adapter con el recyclerView y permite que funcinonen juntos
-        postsRecyclerView.adapter  = PostListAdapter(postsList, requireContext()) { selectedPost -> onPostClick(selectedPost) }
+        postsRecyclerView.adapter  = PostListAdapter(postsList, requireContext()) { selectedPost -> onPostClick(
+            selectedPost
+        ) }
     }
 
 
-    //Funcion que se llama cuando el usuario toca un post
+    //Se llama cuando el usuario toca un post
     private fun onPostClick(selectedPost: Post) {
         //Guarda el post en las clases autogeneradas del navgraph que permiten pasar argumentos entre fragments
-        val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(selectedPost)
+        val action = HistoriasFragmentDirections.actionHistoriasFragmentToPostDetailFragment(
+            selectedPost
+        )
         fragmentView.findNavController().navigate(action)
     }
 
@@ -155,32 +186,58 @@ class HistoriasFragment : Fragment() {
     // Se llama cuando se toca el botton de la barra superior
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-
-            // Boton para abrir el popup
-            R.id.menu_add_post -> {
-
-                popupWindow.isFocusable = true
-                popupWindow.showAsDropDown(postsRecyclerView)
-            
-                // Boton para seleccionar una imagen del telefono
-                btnFoto.setOnClickListener{
-                    selectImageFromGallery()
-                }
-              
-                // Boton para enviar el post
-                btnEnviar.setOnClickListener{
-                    uploadToFirebase()
-                    popupWindow.dismiss()
-                }
-
-                // Boton para salir del popup
-                btnSalir.setOnClickListener{
-                    popupWindow.dismiss()
-                }
+            // Boton para mostrar el BottomSheet
+            R.id.menu_edit_perfil -> {
+                showBottomSheetView()
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    private fun showBottomSheetView() {
+        // Cargar y mostrar el BottomSheet
+        var addPetBottomSheet = LayoutInflater
+                                        .from(requireContext().applicationContext)
+                                        .inflate(
+                                            R.layout.bottom_sheet_add_post,
+                                            fragmentView.findViewById(
+                                                R.id.bottomSheetContainer
+                                            )
+                                        )
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetTheme)
+        // Permite que se muestre completo el BottomsSheetDialog sino no se muestra por completo
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        // Cargar atributos del bottomSheet
+        textoPost = addPetBottomSheet.findViewById(R.id.texto_post)
+        btnFoto = addPetBottomSheet.findViewById(R.id.btnFoto)
+        categoria = addPetBottomSheet.findViewById(R.id.spinnerCategorias)
+        btnEnviar = addPetBottomSheet.findViewById(R.id.btn_subir_post)
+
+
+        // Boton para seleccionar una imagen del telefono
+        btnFoto.setOnClickListener{
+            selectImageFromGallery()
+        }
+
+        // Boton para enviar el post
+        btnEnviar.setOnClickListener{
+            //uploadPostToFirebase()
+            //bottomSheetDialog.dismiss()
+
+            val resultado = uploadPostToFirebase()
+            if (resultado == true) {
+                bottomSheetDialog.dismiss()
+            }
+        }
+
+        bottomSheetDialog.setContentView(addPetBottomSheet)
+        bottomSheetDialog.show()
+    }
+
+
 
 
     private fun selectImageFromGallery() {
@@ -200,12 +257,18 @@ class HistoriasFragment : Fragment() {
     }
 
 
-    private fun uploadToFirebase() {
+    private fun uploadPostToFirebase(): Boolean {
         val fileName = UUID.randomUUID().toString()
         val refStorage = FirebaseStorage
                                            .getInstance()
                                            .reference
                                            .child("ImgsPost/$fileName")
+
+
+        if(textoPost.text.toString().isEmpty()) {
+            Toast.makeText(context, "La publicacion no puede estar vacia", Toast.LENGTH_LONG).show()
+            return false
+        }
 
         // Si se selecciono una imagen entra a este if
         if(selectedPhotoUri != null) {
@@ -222,6 +285,8 @@ class HistoriasFragment : Fragment() {
         } else {
             uploadPostToFirebase("post sin foto")
         }
+
+        return true
     }
 
 
@@ -235,16 +300,30 @@ class HistoriasFragment : Fragment() {
 
 
         val id = FirebaseFirestore.getInstance().collection("Posts").document().getId()
-
-        val post = Post(id,fullName, horaPost, textoPost, imageUrl, categoriaSeleccionada, idUsuario, true)
+        val post = Post(
+            id,
+            fullName,
+            horaPost,
+            textoPost,
+            imageUrl,
+            categoriaSeleccionada,
+            idUsuario,
+            true
+        )
 
         FirebaseFirestore.getInstance().collection("Posts").document(id).set(post)
+
         Log.d(TAG, "uploadPostToFirebase: $id")
+        //Reseteo el uri de la foto seleccionada
+        selectedPhotoUri = null
     }
 
 
     private fun getCurrentUserName() : String {
-        val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE)
+        val prefs = requireContext().getSharedPreferences(
+            getString(R.string.prefs_file),
+            Context.MODE_PRIVATE
+        )
         val userName = prefs.getString("userName", null)
         val userLastName = prefs.getString("userLastName", null)
 
