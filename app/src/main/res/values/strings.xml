@@ -12,6 +12,13 @@
         <item>Asesoria</item>
     </string-array>
 
+    <string-array name="eliminar">
+        <item>Solucionado a través de la app </item>
+        <item>Solucionado por fuera de la app </item>
+        <item>Error en el post</item>
+        <item>Otro</item>
+    </string-array>
+
     <string name="contacto"><s>Contacto</s></string>
 
 

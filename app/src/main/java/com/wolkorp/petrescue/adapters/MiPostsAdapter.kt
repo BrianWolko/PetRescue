@@ -1,5 +1,6 @@
 package com.wolkorp.petrescue.adapters
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +17,9 @@ import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
 import java.text.DateFormat
 
-class MiPostsAdapter(private var postList : MutableList<Post>,var context: Context): RecyclerView.Adapter<MiPostsAdapter.MiPostHolder>() {
+class MiPostsAdapter(private var postList: MutableList<Post>,
+                     var context: Context,  val deleteComment : (String) -> Unit
+): RecyclerView.Adapter<MiPostsAdapter.MiPostHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MiPostHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_mi_post,parent, false)
@@ -40,22 +43,15 @@ class MiPostsAdapter(private var postList : MutableList<Post>,var context: Conte
 
 
         holder.getButtonDelete().setOnClickListener{
-            changePostActiveState(postList[position].id)
+            Log.d(TAG, "onBindViewHolder: ${postList[position].idUsuario}")
+            deleteComment(postList[position].id)
+
+
         }
 
     }
 
 
-    private fun changePostActiveState(id: String) {
-        // todo: pasar esta funcion al MisPostsFragment
-        // todo: no esta funcionando porque el id que se pasa es el del usuario, no el id del post. Agregar al modelo post un campo idPost?
-        Log.d("PostListAdapter", "id = "+ id)
-        val ref = FirebaseFirestore
-                                        .getInstance()
-                                        .collection("Posts")
-                                        .document(id)
-        ref.update("activo",false)
-    }
 
 
     class MiPostHolder (val holderView: View) : RecyclerView.ViewHolder (holderView){

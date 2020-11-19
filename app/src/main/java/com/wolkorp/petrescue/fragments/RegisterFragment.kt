@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
 
 
-class RegisterFragment : Fragment() {
+class  RegisterFragment : Fragment() {
 
     //Es un atributo porque se necesita para navegar a MainActivity
     private lateinit var fragmentView: View
@@ -91,7 +91,8 @@ class RegisterFragment : Fragment() {
         //Ocupa el mismo uid de FirebaseAuth como id del documento de firestore
         val uid = FirebaseAuth.getInstance().uid ?: "No id"
         //Al momento de registrarse el numero de telefono y el url de la imagen van vacios
-        val user = User(uid, userName, userLastName, email, "", "", "")
+        val profileImageStock = "https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/ProfImgs%2Fstock.png?alt=media&token=f76e8822-a47d-4091-b237-5ce3f3ff9ca0"
+        val user = User(uid, userName, userLastName, email, "", "", profileImageStock)
 
         FirebaseFirestore
             .getInstance()

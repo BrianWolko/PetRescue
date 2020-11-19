@@ -27,10 +27,9 @@
             android:id="@+id/txt_user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="236dp"
             android:text="Nombre Usuario"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_profile_post"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -40,14 +39,36 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="161dp" />
 
+        <androidx.cardview.widget.CardView
+
+            android:id="@+id/imgcard_profile_comment"
+            android:layout_width="37dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="4dp"
+            android:elevation="8dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="@+id/guideline13"
+            app:layout_constraintTop_toTopOf="@+id/guideline">
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+
+                android:id="@+id/img_profile_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
+
         <TextView
             android:id="@+id/txt_hora"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="78dp"
+            android:layout_height="19dp"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="260dp"
             android:text="Hace 1 hora"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/img_profile_post"
+
             app:layout_constraintTop_toBottomOf="@+id/txt_user_name" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -73,14 +94,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline3"
             app:layout_constraintBottom_toTopOf="@+id/img_post"/>
 
-        <ImageView
-            android:id="@+id/img_profile_post"
-            android:layout_width="39dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"
-            app:srcCompat="@android:mipmap/sym_def_app_icon" />
+
 
         <ImageView
             android:id="@+id/img_post"
@@ -92,7 +106,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_post" />
 
-
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="10dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

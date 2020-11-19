@@ -4,16 +4,20 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
+import com.wolkorp.petrescue.models.User
 import java.text.DateFormat
-import java.util.*
 
 class PostListAdapter(private var postList: MutableList<Post>, var context: Context, var onPostClick: (Post) -> Unit): RecyclerView.Adapter<PostListAdapter.PostHolder>() {
 
@@ -33,6 +37,8 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
         holder.setHora(postList[position].hora)
         holder.setTexto(postList[position].texto)
 
+
+
         Glide
             .with(context)
             .load(postList[position].urlImg)
@@ -41,6 +47,21 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
         holder.getCardLayout().setOnClickListener {
             onPostClick(postList[position])
         }
+
+        val query = FirebaseFirestore.getInstance().collection("Users").document(postList[position].idUsuario)
+        query.addSnapshotListener{ document,e ->
+            val user : User
+            if (document != null) {
+                user = document.toObject()!!
+
+                val url = user.profileImageUrl
+                Glide
+                    .with(context)
+                    .load(url)
+                    .into(holder.getProfileImageView())
+            }
+        }
+
     }
 
 
@@ -82,6 +103,10 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
         fun getImageView () : ImageView {
            return view.findViewById(R.id.img_post)
        }
+
+        fun getProfileImageView() : ImageView{
+            return view.findViewById(R.id.img_profile_comment)
+        }
 
     }
 }
