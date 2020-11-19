@@ -1,6 +1,7 @@
 package com.wolkorp.petrescue.fragments
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
@@ -332,9 +333,22 @@ class HistoriasFragment : Fragment() {
     }
 
 
+
+
     override fun onStop() {
         super.onStop()
         registrationListener.remove()
+    }
+
+    private fun getUserImage(idUser : String){
+        val query = FirebaseFirestore.getInstance().collection("User").document(idUser)
+        query.addSnapshotListener{document,error ->
+            if (document != null) {
+                val post : Post
+
+            }
+
+        }
     }
 
 }

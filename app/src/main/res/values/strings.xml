@@ -18,6 +18,13 @@
     <string name="descripcion_categoria_buscar_chofer"  translatable="false">Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer </string>
     <string name="descripcion_categoria_aesoria" translatable="false">Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria </string>
 
+    <string-array name="eliminar">
+        <item>Solucionado a través de la app </item>
+        <item>Solucionado por fuera de la app </item>
+        <item>Error en el post</item>
+        <item>Otro</item>
+    </string-array>
+
 
 
 </resources>
