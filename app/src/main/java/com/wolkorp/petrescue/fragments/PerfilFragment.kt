@@ -90,14 +90,11 @@ class PerfilFragment : Fragment() {
                     updateImage(user.profileImageUrl)
                     Toast.makeText(getContext(), "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
 
-                } else {
-                    Toast.makeText(getContext(), "No existe el usuario con id $currentUserId", Toast.LENGTH_LONG).show()
                 }
             }
 
 
         }
-        Toast.makeText(getContext(), "Prueba para ver si hace muchos llamados a firebase o es algo de Toast", Toast.LENGTH_LONG).show()
 
     }
 

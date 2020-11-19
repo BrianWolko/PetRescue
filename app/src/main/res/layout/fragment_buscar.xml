@@ -20,6 +20,7 @@
             android:id="@+id/pets_list"
             android:layout_width="match_parent"
             android:layout_height="210dp"
+            app:layoutManager="com.ramotion.cardslider.CardSliderLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/description_text_switcher"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="20dp"

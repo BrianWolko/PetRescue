@@ -57,7 +57,6 @@ class CategoriasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         createAndAddCategories()
         configurePager()
         addUserInfo()
@@ -65,11 +64,14 @@ class CategoriasFragment : Fragment() {
 
 
     private fun createAndAddCategories() {
+
+        categoriesList.clear()
+
         //Category es la clase que esta en la carpeta models y simplemente contiene dos atributos string
         //Aca el url de la imagen esta hardcodeado, porque si va a mostrar siempre las mismas imagenes y solo son 3 categorias quizas es mas simple asi
-        val categoriaBuscarFamilia = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_familia.jpg?alt=media", "Buscar Familia", "Publicaciones relacionadas con ")
-        val categoriaBuscarChofer = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_chofer.jpg?alt=media", "Buscar Chofer", "Busqueda de choferes para transportar mascotas")
-        val categoriaAsesoria = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fasesoria_mascotas.jpg?alt=media", "Asesoria", "Informacion de uso general para ....")
+        val categoriaBuscarFamilia = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_familia.jpg?alt=media", "Buscar Familia", "Contacto entre individuos o familias interesados en adopción")
+        val categoriaBuscarChofer = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fbuscar_chofer.jpg?alt=media", "Buscar Chofer", "Coordinación  y búsqueda de transporte para mascotas")
+        val categoriaAsesoria = Category("https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/imagenesCategorias%2Fasesoria_mascotas.jpg?alt=media", "Asesoria", "Ayuda y orientación general sobre adopción y cuidado de mascotas")
 
         categoriesList.add(categoriaBuscarFamilia)
         categoriesList.add(categoriaBuscarChofer)
@@ -121,7 +123,7 @@ class CategoriasFragment : Fragment() {
             if (document != null) {
 
                 val user: User = document.toObject()!!
-                helloMessage.text = "Hola, ${user.userName} !"
+                helloMessage.text = "Hola, ${user.userName}!"
 
                 // Solo cargar imagen con glide si existe url de imagen del usuario
                 if(user.profileImageUrl.isNotEmpty()) {
