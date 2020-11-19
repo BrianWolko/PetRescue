@@ -49,18 +49,20 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
         }
 
         val query = FirebaseFirestore.getInstance().collection("Users").document(postList[position].idUsuario)
-        query.addSnapshotListener{ document,e ->
-            val user : User
-            if (document != null) {
-                user = document.toObject()!!
 
-                val url = user.profileImageUrl
+
+
+        query.addSnapshotListener{ document,e ->
+            if (document != null) {
+                val user : User = document.toObject()!!
                 Glide
                     .with(context)
-                    .load(url)
+                    .load(user.profileImageUrl)
                     .into(holder.getProfileImageView())
             }
         }
+
+
 
     }
 

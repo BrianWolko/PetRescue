@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +65,7 @@ class PostDetailFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        updateActionBarTitle()
         val post  = PostDetailFragmentArgs.fromBundle(requireArguments()).selectedPost
         configureRecyclerView()
         getCommentsFromFirebase(post.id)
@@ -78,10 +81,13 @@ class PostDetailFragment : Fragment() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
+    private fun updateActionBarTitle() {
+        // Barra superior de la activity que aparece encima del fragment
+        val actionBar: ActionBar? = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title =  "Comentarios"
     }
+
 
     // Funcion para pasar la hora del post a un string que indica hace cuando fue creado
     private fun getTime(timePost : Timestamp): String {
@@ -141,10 +147,14 @@ class PostDetailFragment : Fragment() {
             }
             if (document != null) {
                 val user: User = document.toObject()!!
-                Glide
-                    .with(requireContext())
-                    .load(user.profileImageUrl)
-                    .into(profile_img_current)
+
+                // si no tiene imagen de perfil muestra la predeterminada que esta en drawables
+                if(user.profileImageUrl.isNotEmpty()) {
+                    Glide
+                        .with(requireContext())
+                        .load(user.profileImageUrl)
+                        .into(profile_img_current)
+                }
 
             }
 
