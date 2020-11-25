@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_perfilFragment_to_editarPerfilFragment"
             app:destination="@id/editarPerfilFragment" />
+        <action
+            android:id="@+id/action_perfilFragment_to_misMascotasFragment"
+            app:destination="@id/misMascotasFragment" />
     </fragment>
 
     <activity
@@ -101,5 +104,9 @@
             android:name="selectedPost"
             app:argType="com.wolkorp.petrescue.models.Post" />
     </fragment>
+    <fragment
+        android:id="@+id/misMascotasFragment"
+        android:name="com.wolkorp.petrescue.fragments.MisMascotasFragment"
+        android:label="MisMascotasFragment" />
 
 </navigation>

@@ -64,6 +64,10 @@ class PerfilFragment : Fragment() {
             it.findNavController().navigate(R.id.action_perfilFragment_to_misPostsFragment)
         }
 
+        btn_ver_mascotas.setOnClickListener {
+            it.findNavController().navigate(R.id.action_perfilFragment_to_misMascotasFragment)
+        }
+
         logOutButton.setOnClickListener {
             logOut()
         }
