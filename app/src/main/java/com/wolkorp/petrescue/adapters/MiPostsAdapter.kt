@@ -12,7 +12,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
-import com.google.firebase.firestore.FirebaseFirestore
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
 import java.text.DateFormat
@@ -65,7 +64,7 @@ class MiPostsAdapter(private var postList: MutableList<Post>,
         }
 
         fun setTexto(txtPost:String){
-            val txt: TextView= holderView.findViewById(R.id.txt_post)
+            val txt: TextView= holderView.findViewById(R.id.txt_my_pet)
             txt.text = txtPost
         }
 
@@ -74,7 +73,7 @@ class MiPostsAdapter(private var postList: MutableList<Post>,
         }
 
         fun getImageView () : ImageView {
-            return holderView.findViewById(R.id.img_post)
+            return holderView.findViewById(R.id.img_my_pet)
         }
     }
 

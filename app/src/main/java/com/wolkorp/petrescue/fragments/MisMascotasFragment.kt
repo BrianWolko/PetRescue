@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -19,9 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.wolkorp.petrescue.R
-import com.wolkorp.petrescue.adapters.MiPostsAdapter
 import com.wolkorp.petrescue.adapters.MisMascotasAdapter
-import com.wolkorp.petrescue.adapters.PetsAdapter
 import com.wolkorp.petrescue.models.Pet
 
 
@@ -55,7 +54,7 @@ class MisMascotasFragment : Fragment() {
     private fun configureRecyclerView(){
         myPetsRecyclerView.setHasFixedSize(true)
         myPetsRecyclerView.layoutManager = LinearLayoutManager(context)
-        myPetsRecyclerView.adapter = MisMascotasAdapter(pets,requireContext()){ selectedPet -> onPetClick(selectedPet) }
+        myPetsRecyclerView.adapter = MisMascotasAdapter(pets,requireContext()){ idMascota -> onItemDelete(idMascota) }
     }
 
     private fun updateActionBarTitle() {
@@ -76,7 +75,9 @@ class MisMascotasFragment : Fragment() {
         val query = FirebaseFirestore
             .getInstance()
             .collection("Pets")
-            .whereEqualTo("idUsuario",userId)
+        // todo: modificar el modelo Pet para que tenga userid y petid
+         .whereEqualTo("idUsuario",userId)
+         .whereEqualTo("activo",true)
 
 
         registrationListener = query.addSnapshotListener { snapshot, error ->
@@ -103,7 +104,53 @@ class MisMascotasFragment : Fragment() {
     }
 
     private fun updateRecyclerView() {
-        myPetsRecyclerView.adapter = PetsAdapter(pets,requireContext()){ selectedPet -> onPetClick(selectedPet) }
+        myPetsRecyclerView.adapter = MisMascotasAdapter(pets, requireContext()) { petId -> onItemDelete(petId) }
+    }
+
+
+    // se llama cuando se toca una publicacion de mascota
+    fun onItemDelete (petId : String ) {
+        var addPetBottomSheet = LayoutInflater
+            .from(requireContext().applicationContext)
+            .inflate(R.layout.bottom_sheet_delete_post, fragmentView.findViewById(R.id.bottomSheetContainer))
+
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetTheme)
+        // Permite que se muestre completo el BottomsSheetDialog sino no se muestra por completo
+        bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        btnConfirmar = addPetBottomSheet.findViewById(R.id.btn_confirmar)
+        btnCancelar = addPetBottomSheet.findViewById(R.id.btn_cancelar)
+
+        btnConfirmar.setOnClickListener{
+            changePetPublicationActiveState(petId)
+            bottomSheetDialog.dismiss()
+        }
+
+        btnCancelar.setOnClickListener{
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.setContentView(addPetBottomSheet)
+        bottomSheetDialog.show()
+
+    }
+
+    private fun changePetPublicationActiveState(id: String) {
+        // todo: no esta funcionando porque el id que se pasa es el del usuario, no el id del post. Agregar al modelo post un campo idPost?
+        Log.d("PetsListAdapter", "id = "+ id)
+        val ref = FirebaseFirestore
+            .getInstance()
+            .collection("Pets")
+            .document(id)
+        ref.update("activo",false)
+        Toast.makeText(context, "Se borró la mascota del mapa", Toast.LENGTH_LONG).show()
+
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        registrationListener.remove()
     }
 
 }

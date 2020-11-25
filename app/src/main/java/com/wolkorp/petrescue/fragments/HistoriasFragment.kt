@@ -31,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.adapters.PostListAdapter
 import com.wolkorp.petrescue.models.Post
+import com.wolkorp.petrescue.models.User
 import kotlinx.android.synthetic.main.category_container.view.*
 import kotlinx.android.synthetic.main.fragment_historias.*
 import java.util.*
@@ -299,7 +300,7 @@ class HistoriasFragment : Fragment() {
         val idUsuario = FirebaseAuth.getInstance().uid ?: "No id"
 
 
-        val id = FirebaseFirestore.getInstance().collection("Posts").document().getId()
+        val id = FirebaseFirestore.getInstance().collection( "Posts").document().getId()
         val post = Post(
             id,
             fullName,
@@ -340,14 +341,22 @@ class HistoriasFragment : Fragment() {
         registrationListener.remove()
     }
 
-    private fun getUserImage(idUser : String){
+    private fun getUserImage(idUser : String): String {
+        var user: User? = null
+
         val query = FirebaseFirestore.getInstance().collection("User").document(idUser)
-        query.addSnapshotListener{document,error ->
+        query.get().addOnSuccessListener{document ->
             if (document != null) {
-                val post : Post
+                user = document.toObject()!!
 
             }
 
+        }
+
+        if (user != null) {
+            return user!!.profileImageUrl
+        } else {
+            return ""
         }
     }
 

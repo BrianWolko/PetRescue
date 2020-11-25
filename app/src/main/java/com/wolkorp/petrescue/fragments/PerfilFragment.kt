@@ -92,8 +92,6 @@ class PerfilFragment : Fragment() {
                     email.text = user.email
                     numero.text = user.phoneNumber
                     updateImage(user.profileImageUrl)
-                    Toast.makeText(getContext(), "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
-
                 }
             }
 

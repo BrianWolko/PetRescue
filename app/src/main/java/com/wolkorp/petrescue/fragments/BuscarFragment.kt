@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
@@ -224,12 +225,14 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val query =  FirebaseFirestore
                              .getInstance()
                              .collection("Pets")
-                             .orderBy("fecha", Query.Direction.DESCENDING)
+                            .whereEqualTo("activo",true)
+                            .orderBy("fecha", Query.Direction.DESCENDING)
 
         registrationListener = query.addSnapshotListener { snapshot, error  ->
             if (error != null) {
                 //todo handle error
                 Toast.makeText(context, "Error cargando mascotas", Toast.LENGTH_SHORT).show()
+                Log.d("BuscarFragment", error.toString())
                 return@addSnapshotListener
             }
 
@@ -422,15 +425,16 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
             return false
         }
 
+        if(this.hour < 0 || this.day <= 0 ) {
+            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una fecha y hora", Toast.LENGTH_LONG).show()
+            return false
+        }
+
         if(this.selectedLongitude == 0.0 && this.selectedLatitude == 0.0) {
             Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una localizacion", Toast.LENGTH_LONG).show()
             return false
         }
 
-        if(this.hour < 0 || this.day <= 0 ) {
-            Toast.makeText(context, "No se subio la mascota.\nTiene que seleccionar una fecha y hora", Toast.LENGTH_LONG).show()
-            return false
-        }
 
         // Esta linea sube solo la imagen a Firebase Storage
         refStorage.putFile(selectedPhotoUri!!).addOnSuccessListener {
@@ -454,13 +458,18 @@ class BuscarFragment : Fragment(), OnMapReadyCallback, DatePickerDialog.OnDateSe
         val latitud = this.selectedLatitude
         val longitud = this.selectedLongitude
         val fecha =  Timestamp(getDateFromSelectedTime())
+        val id = FirebaseFirestore.getInstance().collection("Pets").document().getId()
+        val idUsuario = FirebaseAuth.getInstance().uid ?: "No id"
 
 
-        val pet = Pet(descripcion, latitud, longitud, fecha, imageUrl)
+
+        val pet = Pet(descripcion, latitud, longitud, fecha, imageUrl, id, idUsuario, true)
         FirebaseFirestore
             .getInstance()
             .collection("Pets")
-            .add(pet)
+            //.add(pet)
+            .document(id)
+            .set(pet)
             .addOnSuccessListener {
                  Toast.makeText(context, "Se subio la mascota con exito!", Toast.LENGTH_LONG).show()
             }
