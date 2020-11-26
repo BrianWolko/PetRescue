@@ -14,9 +14,9 @@
 
     <string name="contacto" ><s>Contacto</s></string>
 
-    <string name="descripcion_categoria_buscar_familia" translatable="false">Descripcion de la categoria Descripcion de la categoria Descripcion de la categoria Descripcion de la categoria Descripcion de la categoria Descripcion de la categoria Descripcion de la categoria Descripcion de la final </string>
-    <string name="descripcion_categoria_buscar_chofer"  translatable="false">Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer Descripcion de la categoria buscar chofer </string>
-    <string name="descripcion_categoria_aesoria" translatable="false">Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria Descripcion de la categoria  buscar asesoria </string>
+    <string name="descripcion_categoria_buscar_familia" translatable="false">Aquí puedes encontrar mascotas para adoptar, o bien hacer tus propias publicaciones de las mascotas que necesiten una nueva familia</string>
+    <string name="descripcion_categoria_buscar_chofer"  translatable="false">Aquí puedes encontrar voluntarios para ser los choferes que te ayuden a trasladar alguna mascota, o realizar tus propias publicaciones ofreciendote a la causa</string>
+    <string name="descripcion_categoria_aesoria" translatable="false">Aquí encontrarás todas las respuestas a tus dudas sobre el proceso de adopción y el rescate, y si no las encuentras, puedes hacer tus propias preguntas. Además, podrás responder  las preguntas de los demás.</string>
 
     <string-array name="eliminar">
         <item>Solucionado a través de la app </item>

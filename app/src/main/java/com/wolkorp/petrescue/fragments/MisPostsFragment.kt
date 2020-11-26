@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -147,12 +148,12 @@ class MisPostsFragment : Fragment() {
     private fun changePostActiveState(id: String) {
         // todo: pasar esta funcion al MisPostsFragment
         // todo: no esta funcionando porque el id que se pasa es el del usuario, no el id del post. Agregar al modelo post un campo idPost?
-        Log.d("PostListAdapter", "id = "+ id)
         val ref = FirebaseFirestore
             .getInstance()
             .collection("Posts")
             .document(id)
         ref.update("activo",false)
+        Toast.makeText(context, "Se borró la publicacion", Toast.LENGTH_LONG).show()
     }
 
 

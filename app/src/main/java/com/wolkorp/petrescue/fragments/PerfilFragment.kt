@@ -64,6 +64,10 @@ class PerfilFragment : Fragment() {
             it.findNavController().navigate(R.id.action_perfilFragment_to_misPostsFragment)
         }
 
+        btn_ver_mascotas.setOnClickListener {
+            it.findNavController().navigate(R.id.action_perfilFragment_to_misMascotasFragment)
+        }
+
         logOutButton.setOnClickListener {
             logOut()
         }
@@ -88,8 +92,6 @@ class PerfilFragment : Fragment() {
                     email.text = user.email
                     numero.text = user.phoneNumber
                     updateImage(user.profileImageUrl)
-                    Toast.makeText(getContext(), "Exito obteniendo el usuario", Toast.LENGTH_LONG).show()
-
                 }
             }
 

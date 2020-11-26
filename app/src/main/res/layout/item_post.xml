@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_package_item"
+    android:id="@+id/card_my_pet_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -56,6 +56,7 @@
             <androidx.appcompat.widget.AppCompatImageView
 
                 android:id="@+id/img_profile_comment"
+                android:src="@drawable/blank_profile_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
@@ -83,7 +84,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txt_post"
+            android:id="@+id/txt_my_pet"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -95,12 +96,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
-            app:layout_constraintBottom_toTopOf="@+id/img_post"/>
+            app:layout_constraintBottom_toTopOf="@+id/img_my_pet"/>
 
 
 
         <ImageView
-            android:id="@+id/img_post"
+            android:id="@+id/img_my_pet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -108,7 +109,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txt_post" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_my_pet" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline13"

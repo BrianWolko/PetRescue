@@ -3,14 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_my_pet_item"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="150dp"
     android:layout_margin="8dp"
     android:backgroundTintMode="add"
     app:cardCornerRadius="20dp"
-    app:cardElevation="8dp"
-    tools:layout_editor_absoluteX="8dp"
-    tools:layout_editor_absoluteY="8dp">
+    app:cardElevation="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,11 +20,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Hace 1 hora"
-            app:layout_constraintBottom_toTopOf="@+id/txt_my_pet"
-            app:layout_constraintEnd_toStartOf="@+id/btn_delete"
-            app:layout_constraintStart_toEndOf="@+id/img_my_pet"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.47" />
+            app:layout_constraintBottom_toTopOf="@+id/txt_my_pet"
+            app:layout_constraintStart_toEndOf="@+id/img_my_pet"
+            app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+             />
 
         <TextView
             android:id="@+id/txt_my_pet"
@@ -36,9 +34,9 @@
             android:layout_marginBottom="40dp"
             android:text="Texto del post"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_my_pet"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/img_my_pet" />
+             />
 
         <ImageView
             android:id="@+id/img_my_pet"
@@ -53,7 +51,7 @@
             android:id="@+id/btn_delete"
             android:layout_width="41dp"
             android:layout_height="35dp"
-            android:layout_marginEnd="28dp"
+            android:layout_marginEnd="7dp"
             android:background="#FFFFFF"
             android:drawableBottom="@android:drawable/ic_menu_close_clear_cancel"
             app:layout_constraintBottom_toTopOf="@+id/txt_my_pet"

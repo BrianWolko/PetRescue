@@ -3,6 +3,7 @@ package com.wolkorp.petrescue.fragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns.EMAIL_ADDRESS
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,25 @@ class  RegisterFragment : Fragment() {
                 return@setOnClickListener
             }
 
+
+
+
+            //Validación de datos
+
+            if(password.length < 6 ){
+                Toast.makeText(context, "La contraseña debe tener 6 caracteres como mínimo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(validarEmail(email) ){
+                Toast.makeText(context, "El formato del mail es incorrecto", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+            Toast.makeText(context, "Creando usuario...", Toast.LENGTH_SHORT).show()
+
+
             FirebaseAuth
                 .getInstance()
                 .createUserWithEmailAndPassword(email, password)
@@ -76,6 +96,12 @@ class  RegisterFragment : Fragment() {
     }
 
 
+
+    private fun validarEmail(email: String): Boolean {
+        val pattern = EMAIL_ADDRESS
+        return !pattern.matcher(email).matches()
+    }
+
     private fun saveUserLocally(email: String, userName: String, userLastName: String) {
         val prefs = requireContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE).edit()
         prefs.putString("email", email)
@@ -91,8 +117,8 @@ class  RegisterFragment : Fragment() {
         //Ocupa el mismo uid de FirebaseAuth como id del documento de firestore
         val uid = FirebaseAuth.getInstance().uid ?: "No id"
         //Al momento de registrarse el numero de telefono y el url de la imagen van vacios
-        val profileImageStock = "https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/ProfImgs%2Fstock.png?alt=media&token=f76e8822-a47d-4091-b237-5ce3f3ff9ca0"
-        val user = User(uid, userName, userLastName, email, "", "", profileImageStock)
+        //val profileImageStock = "https://firebasestorage.googleapis.com/v0/b/pet-rescue-4f2a1.appspot.com/o/ProfImgs%2Fstock.png?alt=media&token=f76e8822-a47d-4091-b237-5ce3f3ff9ca0"
+        val user = User(uid, userName, userLastName, email, "", "", "")
 
         FirebaseFirestore
             .getInstance()
