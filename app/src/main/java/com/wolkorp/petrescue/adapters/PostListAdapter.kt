@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -13,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
 import com.wolkorp.petrescue.R
 import com.wolkorp.petrescue.models.Post
 import com.wolkorp.petrescue.models.User
@@ -48,17 +46,24 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
             onPostClick(postList[position])
         }
 
-        val query = FirebaseFirestore.getInstance().collection("Users").document(postList[position].idUsuario)
 
-
-
-        query.addSnapshotListener{ document,e ->
+        FirebaseFirestore
+        .getInstance()
+        .collection("Users")
+        .document(postList[position].idUsuario)
+        .get()
+        .addOnSuccessListener{ document ->
             if (document != null) {
                 val user : User = document.toObject()!!
-                Glide
-                    .with(context)
-                    .load(user.profileImageUrl)
-                    .into(holder.getProfileImageView())
+
+                if(user.profileImageUrl.isNotEmpty()) {
+
+                    Glide
+                        .with(context)
+                        .load(user.profileImageUrl)
+                        .into(holder.getProfileImageView())
+                }
+
             }
         }
 
@@ -92,18 +97,18 @@ class PostListAdapter(private var postList: MutableList<Post>, var context: Cont
 
 
         fun setTexto(txtPost: String){
-            val txt: TextView= view.findViewById(R.id.txt_post)
+            val txt: TextView= view.findViewById(R.id.txt_my_pet)
             txt.text = txtPost
         }
 
 
         fun getCardLayout(): CardView {
-            return view.findViewById(R.id.card_package_item)
+            return view.findViewById(R.id.card_my_pet_item)
         }
 
 
         fun getImageView () : ImageView {
-           return view.findViewById(R.id.img_post)
+           return view.findViewById(R.id.img_my_pet)
        }
 
         fun getProfileImageView() : ImageView{
