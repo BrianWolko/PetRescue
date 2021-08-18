@@ -94,8 +94,14 @@ class LoginFragment : Fragment() {
                         "No se pudo ingresar a tu cuenta. \nIntenta de nuevo",
                         Toast.LENGTH_SHORT
                     ).show()
+                    print(task.result)
                 }
             }
+
+                .addOnFailureListener {
+                    print("Fallo el login y aca esta el error:")
+                    print(it.localizedMessage)
+                }
         }
     }
 
