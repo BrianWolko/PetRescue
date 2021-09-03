@@ -32,54 +32,84 @@ By the latter group we mean all those individuals or communities that :
 - Have veterinary knowledge or experience.   
 - Just want to help the community.
 
+<br>
+
 # Why
 <img align="right" src="https://github.com/Alvaro-Orellana/PetRescue/blob/master/images%20for%20readme/historias_screen.gif" width="315" height="560">  
 
-Animal shelters despite their best efforts are constantly struggling with overcrowding and incapacity to find owners to all of their pets. There's just no room for all of them. This is due to their heavilly dependence on volunteer work and reliance on old methods of notice/advertisement. These old methods include: newspapers, local radio and television stations, and photos posted in stores, animal hospitals, etc.
+Animal shelters despite their best efforts are constantly struggling with overcrowding and incapacity to find owners for all of their pets; this is due to their heavy dependence on volunteer work and reliance on old methods of notice/advertisement. These old methods include: newspapers, local radio and television stations, photos posted in stores and animal hospitals, etc.
 
-The best way people can help their local shelters is not with more money or more capacity but to increase adoptions. To achieve this we developed an app that 
-improves the methods for public notice and simplifies the cumbersome rescuing/adoption process.
+To tackle these main deterrents of shelters' progress we developed an app that improves on the means of public announcement and simplifies the cumbersome rescuing/adoption process.
 
 We identified the mayor inconveniences and the most difficult processes to coordinate to be the following:
 
-- The reception and communication between the parties involved in the adoption process (rescuers and adopters).
-- Search and location of animals that best suit the criteria of what a potential adopter is looking for.
-- Assisting rescuers through contact with shelters and volunteers.
+- Search and location of animals that best suit the criteria of what a potential adopter is looking for
+- The reception and communication between the parties involved in the adoption process (rescuers and adopters)
+- Assisting rescuers through contact with shelters, volunteers and veterinarians
+- Transportation
+- Medical attention
 
-We believe that providing a solution to all of these problems our app can grow a foster care community, giving support to those who do thus strengthening the community and increase the probability of adoption.
+<br>
+We expect that a proper solution of these issues will greatly increase the probability of adoption.
 
+<br>
 <br>
 
 # How it works
 
-The application allows you to publish, search, comment and meet the different rescuers and people who want to adopt. It also allows you to upload the location to find yourself between the rescuer and the adopter. In addition, it allows you to search and offer yourself as a driver for transfers and to publish and answer different queries.
+The app is divided into three main screens. These screens are Search, Stories and Profile. Within these the user navigates through the app and can publish, browse, comment, localize pets and interact with other users. 
 
-The application adapts to the needs of each user in terms of everything that concerns adoption, be it a rescuer or someone who wants to adopt.
-
-"Stories" will have an interface similar to Facebook where posts made by users will be displayed, divided into categories specifically related to the rescue and adoption of an animal in the street. Initially, they will appear: "Search for a Family", "Search for a Driver", "Advice". These are the initials but the system will be designed in such a way that more categories can be added in the future if necessary.
+<br>
 
 <img align="left" src="https://github.com/Alvaro-Orellana/PetRescue/blob/master/images%20for%20readme/buscar_screen.gif" width="315" height="560">  
 
-The user within this screen will be able to navigate, publish, delete stories; and start a conversation by chatting with the author of the posts.
+## Search screen 
+This is for discovering and posting about the location and condition of stray animals. It consists of a map and a scrolling list of images. Each image has an associated location that is automatically shown on the map when it is scrolled to. Also a detail screen appears when the user taps on an image.
 
-A story will consist of text plus images, and potentially videos.
+## Stories screen 
+Presents different categories for browsing and posting content. Each category is related to the main concerns (according to our research) of the whole rescue/adoption process.
+These are: "Search for a Family", "Search for a Driver", "Advice".
 
-When selecting a story the user will be taken to a new screen showing only the selected story and the option to send messages to the author will be displayed.
+Tapping on any of these will display a list of posts relating to it's category, similar to the way social networks present content. Each post can also have comments.
 
-"Search" consists of a map with the current position of the user that will show markers with the location of nearby adoption homes.
+## Profile Screen
+This is just your standard profile screen that shows the information of the registered user and allows editing. Also you can see the content that you posted.
 
-"Profile" will show the information of the registered user, mainly name, surname, photo, and contact.
+<br>
+<br>
+<br>
 
-It will allow you to edit the entered data, upload a user photo and exit the account.
+# Uploading content
 
-TO DO
-## Features
-## Context
-## Screens
-## App demo
-## Membeers 
+Here's a quick demo of how it looks to upload or edit content in every screen. In each case the user has to tap a button on the same location, the upper right corner. This was made for consistency and easier user experience.
+
+Search Screen             |  Stories screen         | Profile Screen
+:-------------------------:|:-------------------------: |:-------------------------:
+![](https://github.com/Alvaro-Orellana/PetRescue/blob/master/images%20for%20readme/edit_buscar_screen.gif)  |  ![](https://github.com/Alvaro-Orellana/PetRescue/blob/master/images%20for%20readme/edit_historias_screen.gif) | ![](https://github.com/Alvaro-Orellana/PetRescue/blob/master/images%20for%20readme/edit_profile_screen.gif)
+
+
+
+# To do
+
+Posible features that could be added in future versions:
+
+- Enable users to upload not just images but also videos
+- More categories in Stories screen. Can be easily added if there's demand for it.
+- On the Search screen map show also the location of nearby adoption homes.
+- Direct messaging with the author of a post
+
+
+## Members 
+
+- <a href="https://github.com/tomasbrito"> Tomas Brito </a>
+- <a href="https://github.com/LautaroCosso"> Lautaro Cosso </a>
+- <a href="https://github.com/Alvaro-Orellana"> Alvaro Orellana </a>
+- <a href="https://github.com/BrianWolko"> Brian Wolkomirski </a>
+ 
+
 ## License
 
+This project is <a href="https://github.com/Alvaro-Orellana/PetRescue/blob/master/LICENSE">MIT licensed </a>
 
 
 
